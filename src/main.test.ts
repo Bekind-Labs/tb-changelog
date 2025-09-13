@@ -46,11 +46,11 @@ describe("main", () => {
       },
       {
         args: ["--from", "v1.0.0", "--tb-project-id", "123456"],
-        expected: "--github-repo option is required",
+        expected: "github-repo is required (use --github-repo or set TB_GITHUB_REPO)",
       },
       {
         args: ["--from", "v1.0.0", "--github-repo", "https://github.com/test/repo"],
-        expected: "--tb-project-id option is required",
+        expected: "tb-project-id is required (use --tb-project-id or set TB_PROJECT_ID)",
       },
       {
         args: ["--from", "v1.0.0", "--github-repo", "https://github.com/test/repo", "--tb-project-id", "123456"],
