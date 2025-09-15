@@ -1,10 +1,32 @@
 {
   "name": "tb-changelog",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Generate changelog from git history and TrackerBoot API",
-  "type": "module",
+  "keywords": [
+    "changelog",
+    "git",
+    "trackerboot",
+    "cli"
+  ],
+  "homepage": "https://github.com/Bekind-Labs/tb-changelog",
+  "bugs": {
+    "url": "https://github.com/Bekind-Labs/tb-changelog/issues"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Yuka Kobayashi",
+    "email": "yuka@bekindlabs.com",
+    "url": "https://github.com/yukkobay"
+  },
+  "files": [
+    "dist/cli.js"
+  ],
   "bin": {
     "tb-changelog": "./dist/cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Bekind-Labs/tb-changelog.git"
   },
   "scripts": {
     "dev": "DEBUG=true tsx src/cli.ts",
@@ -16,20 +38,11 @@
     "lint": "biome check --write",
     "lint:unsafe": "biome check --write --unsafe",
     "lint:ci": "biome ci",
-    "pre-commit": "npm run lint:unsafe && npm run typecheck && npm run test",
-    "pre-publish": "npm run typecheck && npm run build"
+    "pre-commit": "npm run lint:unsafe && npm run typecheck && npm run test"
   },
-  "keywords": [
-    "changelog",
-    "git",
-    "trackerboot",
-    "cli"
-  ],
-  "author": "",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Bekind-Labs/tb-changelog.git"
+  "dependencies": {
+    "consola": "^3.4.2",
+    "execa": "^9.6.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.2",
@@ -43,11 +56,5 @@
   "engines": {
     "node": ">=22.0.0"
   },
-  "files": [
-    "dist"
-  ],
-  "dependencies": {
-    "consola": "^3.4.2",
-    "execa": "^9.6.0"
-  }
+  "type": "module"
 }
