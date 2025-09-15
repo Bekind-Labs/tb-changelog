@@ -1,4 +1,5 @@
 import { parseArgs } from "node:util";
+import packageJson from "../../package.json" with { type: "json" };
 
 type Options =
   | {
@@ -9,6 +10,7 @@ type Options =
       githubRepo: string;
       tbProjectId: string;
       output?: string;
+      version: string;
     }
   | { help: true };
 export const parseOptions = (args: string[]): Options => {
@@ -71,5 +73,6 @@ export const parseOptions = (args: string[]): Options => {
     tbProjectId,
     help: false,
     output: options.values.output,
+    version: packageJson.version,
   };
 };

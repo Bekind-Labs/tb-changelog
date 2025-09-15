@@ -1,6 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
 import { parseOptions } from "./parse-options";
 
+vi.mock("../../package.json", () => ({
+  default: {
+    version: "1.2.3",
+  },
+}));
+
 describe("parseOptions", () => {
   it.each(["--help", "-h"])("returns help flag only when %s is provided", (arg) => {
     const result = parseOptions([arg]);
@@ -120,6 +126,23 @@ describe("parseOptions", () => {
       });
     });
 
+    it("includes version from package.json", () => {
+      vi.stubEnv("TB_API_KEY", "test-key");
+
+      const result = parseOptions([
+        "--from",
+        "v1.0.0",
+        "--github-repo",
+        "https://github.com/test/repo",
+        "--tb-project-id",
+        "123456",
+      ]);
+
+      expect(result).toMatchObject({
+        version: "1.2.3",
+      });
+    });
+
     it("combines all provided options with environment variables", () => {
       vi.stubEnv("TB_API_KEY", "test-key");
 
@@ -144,6 +167,7 @@ describe("parseOptions", () => {
         tbProjectId: "123456",
         help: false,
         output: "./path/to/file.md",
+        version: "1.2.3",
       } satisfies Required<ReturnType<typeof parseOptions>>);
     });
   });

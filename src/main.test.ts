@@ -10,6 +10,9 @@ vi.mock("consola");
 vi.mock("node:fs/promises");
 vi.mock("./repositories/get-commits");
 vi.mock("./repositories/fetch-stories-from-api");
+vi.mock("../package.json", () => ({
+  default: { version: "0.1.0" },
+}));
 
 describe("main", () => {
   beforeEach(() => {

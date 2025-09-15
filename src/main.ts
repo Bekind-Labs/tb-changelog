@@ -18,7 +18,7 @@ export async function main(args: string[]) {
       process.exit(0);
     }
 
-    consola.log(colorize("dim", "tb-changelog v0.1.0"));
+    consola.log(colorize("dim", `tb-changelog v${options.version}`));
     consola.debug({ badge: true, message: options });
     consola.info(`Generating changelog: ${colorize("blue", options.from)} → ${colorize("green", options.to)}`);
 
