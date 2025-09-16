@@ -18,7 +18,8 @@ export async function main(args: string[]) {
       process.exit(0);
     }
 
-    consola.log(colorize("dim", `tb-changelog v${options.version}`));
+    consola.log(colorize("dim", `tb-changelog v${options.version}\n`));
+
     consola.debug({ badge: true, message: options });
     consola.info(`Generating changelog: ${colorize("blue", options.from)} → ${colorize("green", options.to)}`);
 
@@ -37,7 +38,7 @@ export async function main(args: string[]) {
       options.apiKey,
       gitStories.map((story) => story.id),
     );
-    consola.debug({ message: `Found ${tbStories.length} stories in TrackerBoot` });
+    consola.success({ message: `Retrieved ${tbStories.length} stories from TrackerBoot` });
 
     const { acceptedStories, needsAttentionStories, notFinishedStories, chores } = combineAllInformation(
       gitStories,

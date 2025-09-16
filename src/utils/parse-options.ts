@@ -42,8 +42,8 @@ export const parseOptions = (args: string[]): Options => {
     return { help: true };
   }
 
-  if (!options.values.from) {
-    throw new Error("--from option is required");
+  if (!process.env.TB_API_KEY) {
+    throw new Error("TB_API_KEY environment variable is required");
   }
 
   const tbProjectId = options.values["tb-project-id"] || process.env.TB_PROJECT_ID;
@@ -52,8 +52,8 @@ export const parseOptions = (args: string[]): Options => {
     throw new Error("tb-project-id is required (use --tb-project-id or set TB_PROJECT_ID)");
   }
 
-  if (!process.env.TB_API_KEY) {
-    throw new Error("TB_API_KEY environment variable is required");
+  if (!options.values.from) {
+    throw new Error("--from option is required");
   }
 
   return {

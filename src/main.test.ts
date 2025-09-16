@@ -42,20 +42,25 @@ describe("main", () => {
   });
 
   describe("terminates with error when validation fails", () => {
+    it("exits with code 1 when TB_API_KEY is not provided", () => {
+      main([]);
+
+      expect(consola.error).toHaveBeenCalledWith("TB_API_KEY environment variable is required");
+      expect(process.exit).toHaveBeenCalledWith(1);
+    });
+
     it.each([
+      {
+        args: [],
+        expected: "tb-project-id is required (use --tb-project-id or set TB_PROJECT_ID)",
+      },
       {
         args: ["--tb-project-id", "123456"],
         expected: "--from option is required",
       },
-      {
-        args: ["--from", "v1.0.0"],
-        expected: "tb-project-id is required (use --tb-project-id or set TB_PROJECT_ID)",
-      },
-      {
-        args: ["--from", "v1.0.0", "--tb-project-id", "123456"],
-        expected: "TB_API_KEY environment variable is required",
-      },
     ])("exits with code 1 ($expected)", ({ args, expected }) => {
+      vi.stubEnv("TB_API_KEY", "test-key");
+
       main(args);
 
       expect(consola.error).toHaveBeenCalledWith(expected);
@@ -67,7 +72,7 @@ describe("main", () => {
     vi.stubEnv("TB_API_KEY", "test-key");
     main(["--from", "v1.0.0", "--tb-project-id", "123456"]);
 
-    expect(consola.log).toHaveBeenCalledWith("tb-changelog v0.1.0");
+    expect(consola.log).toHaveBeenCalledWith("tb-changelog v0.1.0\n");
     expect(consola.info).toHaveBeenCalledWith("Generating changelog: v1.0.0 → HEAD");
     expect(process.exit).not.toHaveBeenCalled();
   });
