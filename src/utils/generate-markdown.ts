@@ -2,7 +2,6 @@ import type { GitCommit, Story } from "../types";
 
 export const generateMarkdown = (args: {
   projectId: string;
-  githubRepoUrl: string;
   acceptedStories: Story[];
   needsAttentionStories: Story[];
   notFinishedStories: Story[];
@@ -16,14 +15,13 @@ export const generateMarkdown = (args: {
 > 🚨 ${args.needsAttentionStories.length} stories need attention, 🚧 ${args.notFinishedStories.length} stories not finished, 🛠️ ${args.chores.length} chores included
 
 ## ✅ Accepted Stories (${args.acceptedStories.length})
-${generateFromStories(args.projectId, args.githubRepoUrl, args.acceptedStories)}
+${generateFromStories(args.projectId, args.acceptedStories)}
 
 ---
 
 ## 🚨 Needs Attention (${args.needsAttentionStories.length})
 ${generateFromStories(
   args.projectId,
-  args.githubRepoUrl,
   args.needsAttentionStories,
   `
 > [!WARNING]
@@ -37,7 +35,6 @@ ${generateFromStories(
 ## 🚧 Not Finished Stories (${args.notFinishedStories.length})
 ${generateFromStories(
   args.projectId,
-  args.githubRepoUrl,
   args.notFinishedStories,
   `
 > [!CAUTION]
@@ -49,22 +46,17 @@ ${generateFromStories(
 ---
 
 ## 🛠️ Chores (${args.chores.length})
-${generateFromStories(args.projectId, args.githubRepoUrl, args.chores)}
+${generateFromStories(args.projectId, args.chores)}
 
 ---
 
 ## 🔍 Non-story Commits (${args.nonStoryCommits.length})
-${args.nonStoryCommits.length ? generateCommitList(args.githubRepoUrl, args.nonStoryCommits) : "No commits."}
+${args.nonStoryCommits.length ? generateCommitList(args.nonStoryCommits) : "No commits."}
 
   `.trim();
 };
 
-const generateFromStories = (
-  projectId: string,
-  githubRepoUrl: string,
-  stories: Story[],
-  warning: string = "",
-): string => {
+const generateFromStories = (projectId: string, stories: Story[], warning: string = ""): string => {
   if (!stories.length) {
     return "No stories.";
   }
@@ -76,7 +68,7 @@ const generateFromStories = (
         storyType === "Chore"
           ? `#### [${title}](${url})${status !== "Accepted" ? " (Not finished)" : ""}`
           : `#### ${getStoryIcon(storyType)} [${title}](${url})`;
-      const commitList = generateCommitList(githubRepoUrl, commits);
+      const commitList = generateCommitList(commits);
       return `${header}\n${commitList}`;
     })
     .join("\n");
@@ -84,8 +76,8 @@ const generateFromStories = (
   return warning ? `${warning}\n${content}` : content;
 };
 
-const generateCommitList = (githubRepoUrl: string, commits: GitCommit[]): string => {
-  return commits.map((commit) => `- ${commit.message} ${githubRepoUrl}/commit/${commit.hash}`).join("\n");
+const generateCommitList = (commits: GitCommit[]): string => {
+  return commits.map((commit) => `- ${commit.message} ${commit.shortHash}`).join("\n");
 };
 
 const createUrl = (projectId: string, storyId: string) =>

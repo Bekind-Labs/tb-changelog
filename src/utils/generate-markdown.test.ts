@@ -7,24 +7,23 @@ describe("generateMarkdown", () => {
   const stories: Story[] = [
     {
       ...buildTBStory({ id: "111", storyType: "Feature", title: "Feature story" }),
-      commits: [buildGitCommit({ hash: "aaa", message: "Feature story commit" })],
+      commits: [buildGitCommit({ shortHash: "aaa", message: "Feature story commit" })],
     },
     {
       ...buildTBStory({ id: "222", storyType: "Design", title: "Design story" }),
       commits: [
-        buildGitCommit({ hash: "bbb", message: "Design story commit 1" }),
-        buildGitCommit({ hash: "ccc", message: "Design story commit 2" }),
+        buildGitCommit({ shortHash: "bbb", message: "Design story commit 1" }),
+        buildGitCommit({ shortHash: "ccc", message: "Design story commit 2" }),
       ],
     },
     {
       ...buildTBStory({ id: "333", storyType: "Bug", title: "Bug story" }),
-      commits: [buildGitCommit({ hash: "ddd", message: "Bug story commit" })],
+      commits: [buildGitCommit({ shortHash: "ddd", message: "Bug story commit" })],
     },
   ];
 
   const build = (overrides: Partial<Parameters<typeof generateMarkdown>[0]>) => ({
     projectId: "",
-    githubRepoUrl: "",
     acceptedStories: [],
     needsAttentionStories: [],
     notFinishedStories: [],
@@ -42,12 +41,12 @@ describe("generateMarkdown", () => {
 
   const assertStoryList = (lines: string[]) => {
     expect(lines[0]).toEqual("#### 🧩 [Feature story](https://trackerboot.com/projects/999/stories/111)");
-    expect(lines[1]).toEqual("- Feature story commit https://path/to/repo/commit/aaa");
+    expect(lines[1]).toEqual("- Feature story commit aaa");
     expect(lines[2]).toEqual("#### 🎨 [Design story](https://trackerboot.com/projects/999/stories/222)");
-    expect(lines[3]).toEqual("- Design story commit 1 https://path/to/repo/commit/bbb");
-    expect(lines[4]).toEqual("- Design story commit 2 https://path/to/repo/commit/ccc");
+    expect(lines[3]).toEqual("- Design story commit 1 bbb");
+    expect(lines[4]).toEqual("- Design story commit 2 ccc");
     expect(lines[5]).toEqual("#### 🦋 [Bug story](https://trackerboot.com/projects/999/stories/333)");
-    expect(lines[6]).toEqual("- Bug story commit https://path/to/repo/commit/ddd");
+    expect(lines[6]).toEqual("- Bug story commit ddd");
   };
 
   it("starts with release stats section", () => {
@@ -83,7 +82,6 @@ describe("generateMarkdown", () => {
       const result = generateMarkdown(
         build({
           projectId: "999",
-          githubRepoUrl: "https://path/to/repo",
           acceptedStories: stories,
         }),
       );
@@ -111,7 +109,6 @@ describe("generateMarkdown", () => {
       const result = generateMarkdown(
         build({
           projectId: "999",
-          githubRepoUrl: "https://path/to/repo",
           needsAttentionStories: stories,
         }),
       );
@@ -144,7 +141,6 @@ describe("generateMarkdown", () => {
       const result = generateMarkdown(
         build({
           projectId: "999",
-          githubRepoUrl: "https://path/to/repo",
           notFinishedStories: stories,
         }),
       );
@@ -177,7 +173,6 @@ describe("generateMarkdown", () => {
       const result = generateMarkdown(
         build({
           projectId: "999",
-          githubRepoUrl: "https://path/to/repo",
           chores: [
             {
               ...buildTBStory({
@@ -186,7 +181,7 @@ describe("generateMarkdown", () => {
                 status: "Accepted",
                 title: "Chore story 1",
               }),
-              commits: [buildGitCommit({ hash: "aaa", message: "Chore commit 1" })],
+              commits: [buildGitCommit({ shortHash: "aaa", message: "Chore commit 1" })],
             },
             {
               ...buildTBStory({
@@ -195,7 +190,7 @@ describe("generateMarkdown", () => {
                 status: "Started",
                 title: "Chore story 2",
               }),
-              commits: [buildGitCommit({ hash: "bbb", message: "Chore commit 2" })],
+              commits: [buildGitCommit({ shortHash: "bbb", message: "Chore commit 2" })],
             },
           ],
         }),
@@ -204,9 +199,9 @@ describe("generateMarkdown", () => {
 
       expect(lines[0]).toEqual("## 🛠️ Chores (2)");
       expect(lines[1]).toEqual("#### [Chore story 1](https://trackerboot.com/projects/999/stories/111)");
-      expect(lines[2]).toEqual("- Chore commit 1 https://path/to/repo/commit/aaa");
+      expect(lines[2]).toEqual("- Chore commit 1 aaa");
       expect(lines[3]).toEqual("#### [Chore story 2](https://trackerboot.com/projects/999/stories/222) (Not finished)");
-      expect(lines[4]).toEqual("- Chore commit 2 https://path/to/repo/commit/bbb");
+      expect(lines[4]).toEqual("- Chore commit 2 bbb");
       expect(lines[5]).toEqual("");
       expect(lines[6]).toEqual("---");
     });
@@ -227,10 +222,9 @@ describe("generateMarkdown", () => {
       const result = generateMarkdown(
         build({
           projectId: "999",
-          githubRepoUrl: "https://path/to/repo",
           nonStoryCommits: [
-            buildGitCommit({ hash: "aaa", message: "Commit 1" }),
-            buildGitCommit({ hash: "bbb", message: "Commit 2" }),
+            buildGitCommit({ shortHash: "aaa", message: "Commit 1" }),
+            buildGitCommit({ shortHash: "bbb", message: "Commit 2" }),
           ],
         }),
       );
@@ -239,8 +233,8 @@ describe("generateMarkdown", () => {
       expect(lines).toHaveLength(3);
 
       expect(lines[0]).toEqual("## 🔍 Non-story Commits (2)");
-      expect(lines[1]).toEqual("- Commit 1 https://path/to/repo/commit/aaa");
-      expect(lines[2]).toEqual("- Commit 2 https://path/to/repo/commit/bbb");
+      expect(lines[1]).toEqual("- Commit 1 aaa");
+      expect(lines[2]).toEqual("- Commit 2 bbb");
     });
   });
 });

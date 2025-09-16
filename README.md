@@ -17,7 +17,7 @@
 
 - 🎯 **Release Confidence** - Organizes stories by acceptance status, instantly flagging unapproved features before they ship
 - 📊 **Rapid Release Visibility** - Groups commits by story status and type, making it clear what's ready, what needs attention, and what's incomplete
-- ⚡ **Zero Friction Setup** - Just 3 environment variables to start - designed for CI/CD integration and frequent deployments
+- ⚡ **Zero Friction Setup** - Just 2 environment variables to start - designed for CI/CD integration and frequent deployments
 
 ## 📸 Example Output
 
@@ -54,7 +54,6 @@ npx tb-changelog --from v1.0.0 --to v1.1.0 --output CHANGELOG.md
 ### Configuration
 ```bash
 export TB_API_KEY=your_tracker_boot_api_key
-export TB_GITHUB_REPO=https://github.com/your/repository
 export TB_PROJECT_ID=your_tracker_boot_project_id
 ```
 
@@ -66,8 +65,6 @@ Usage: tb-changelog [options]
 Options:
   --from <tag>                     Start tag/branch/commit (required)
   --to <tag>                       End tag/branch/commit (default: HEAD)
-  --github-repo <url>              GitHub repository URL
-                                   Example: https://github.com/your/repository
   --tb-project-id <id>             TrackerBoot project ID
                                    Example: 123456789
   --output <file>, -o <file>       Output file path (optional)
@@ -75,7 +72,6 @@ Options:
 
 Environment Variables:
   TB_API_KEY                       TrackerBoot API key (required)
-  TB_GITHUB_REPO                   GitHub repository URL (alternative to --github-repo)
   TB_PROJECT_ID                    TrackerBoot project ID (alternative to --tb-project-id)
 
 Note: CLI arguments take precedence over environment variables when both are provided.

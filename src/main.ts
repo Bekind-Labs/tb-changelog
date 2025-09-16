@@ -46,7 +46,6 @@ export async function main(args: string[]) {
     );
 
     const markdown = generateMarkdown({
-      githubRepoUrl: options.githubRepo,
       projectId: options.tbProjectId,
       acceptedStories,
       needsAttentionStories,

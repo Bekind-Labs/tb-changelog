@@ -44,19 +44,15 @@ describe("main", () => {
   describe("terminates with error when validation fails", () => {
     it.each([
       {
-        args: ["--github-repo", "https://github.com/test/repo", "--tb-project-id", "123456"],
+        args: ["--tb-project-id", "123456"],
         expected: "--from option is required",
       },
       {
-        args: ["--from", "v1.0.0", "--tb-project-id", "123456"],
-        expected: "github-repo is required (use --github-repo or set TB_GITHUB_REPO)",
-      },
-      {
-        args: ["--from", "v1.0.0", "--github-repo", "https://github.com/test/repo"],
+        args: ["--from", "v1.0.0"],
         expected: "tb-project-id is required (use --tb-project-id or set TB_PROJECT_ID)",
       },
       {
-        args: ["--from", "v1.0.0", "--github-repo", "https://github.com/test/repo", "--tb-project-id", "123456"],
+        args: ["--from", "v1.0.0", "--tb-project-id", "123456"],
         expected: "TB_API_KEY environment variable is required",
       },
     ])("exits with code 1 ($expected)", ({ args, expected }) => {
@@ -69,7 +65,7 @@ describe("main", () => {
 
   it("executes changelog generation when inputs are valid", () => {
     vi.stubEnv("TB_API_KEY", "test-key");
-    main(["--from", "v1.0.0", "--github-repo", "https://github.com/test/repo", "--tb-project-id", "123456"]);
+    main(["--from", "v1.0.0", "--tb-project-id", "123456"]);
 
     expect(consola.log).toHaveBeenCalledWith("tb-changelog v0.1.0");
     expect(consola.info).toHaveBeenCalledWith("Generating changelog: v1.0.0 → HEAD");
@@ -82,7 +78,7 @@ describe("main", () => {
     });
 
     it("outputs to console(stdout) when no output file is specified", async () => {
-      await main(["--from", "v1.0.0", "--github-repo", "https://github.com/test/repo", "--tb-project-id", "123456"]);
+      await main(["--from", "v1.0.0", "--tb-project-id", "123456"]);
 
       expect(consola.success).toHaveBeenCalledWith({ badge: true, message: "📦 Changelog generated successfully." });
       expect(console.log).toHaveBeenCalledTimes(1);
@@ -98,16 +94,7 @@ describe("main", () => {
     });
 
     it("saves to file when output path is provided with --output option", async () => {
-      await main([
-        "--from",
-        "v1.0.0",
-        "--github-repo",
-        "https://github.com/test/repo",
-        "--tb-project-id",
-        "123456",
-        "--output",
-        "./docs/CHANGELOG.md",
-      ]);
+      await main(["--from", "v1.0.0", "--tb-project-id", "123456", "--output", "./docs/CHANGELOG.md"]);
 
       expect(consola.success).toHaveBeenCalledWith({
         badge: true,
