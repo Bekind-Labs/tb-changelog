@@ -1,0 +1,124 @@
+name: 'tb-changelog-sync-draft'
+description: 'Auto-sync draft releases with changelogs from latest release to HEAD when code is pushed'
+
+inputs:
+  tb-api-key:
+    description: 'TrackerBoot API key'
+    required: true
+  tb-project-id:
+    description: 'TrackerBoot project ID'
+    required: true
+  draft-title:
+    description: 'Title for the draft release'
+    required: false
+    default: '📛 Next Release Candidate'
+  timezone:
+    description: 'Timezone for timestamp display (e.g., Etc/UTC, Asia/Tokyo, America/New_York)'
+    required: false
+    default: 'Etc/UTC'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+
+    - name: Install tb-changelog
+      shell: bash
+      run: npm install -g tb-changelog@latest
+
+    - name: Find or create draft release
+      id: draft-release
+      shell: bash
+      run: |
+        DRAFT_TITLE="${{ inputs.draft-title }}"
+
+        # Search for existing draft release with matching title (no tag required)
+        EXISTING_DRAFT=$(gh api repos/${{ github.repository }}/releases \
+          --jq ".[] | select(.draft==true and .name==\"$DRAFT_TITLE\") | .id" \
+          | head -1)
+
+        if [ -n "$EXISTING_DRAFT" ]; then
+          echo "action=update" >> $GITHUB_OUTPUT
+          echo "draft_id=$EXISTING_DRAFT" >> $GITHUB_OUTPUT
+        else
+          echo "action=create" >> $GITHUB_OUTPUT
+          echo "draft_id=" >> $GITHUB_OUTPUT
+        fi
+
+        # Get latest published release for version range
+        LATEST_RELEASE=$(gh release list \
+          --exclude-drafts --exclude-pre-releases \
+          --limit 1 --order desc \
+          --json tagName --jq '.[0].tagName')
+
+        echo "from=$LATEST_RELEASE" >> $GITHUB_OUTPUT
+        echo "title=$DRAFT_TITLE" >> $GITHUB_OUTPUT
+      env:
+        GH_TOKEN: ${{ github.token }}
+
+    - name: Generate changelog
+      shell: bash
+      run: |
+        # Get commit hashes for display
+        FROM_TAG="${{ steps.draft-release.outputs.from }}"
+        FROM_HASH=$(git rev-parse --short "$FROM_TAG" 2>/dev/null || echo "unknown")
+        TO_HASH=$(git rev-parse --short HEAD)
+
+        # Generate timestamp with user's timezone
+        export TZ="${{ inputs.timezone }}"
+        TIMESTAMP=$(date '+%Y-%m-%d %H:%M %Z' 2>/dev/null || date -u '+%Y-%m-%d %H:%M UTC')
+
+        # Generate warning header for draft release
+        cat > /tmp/changelog.md << EOF
+        > [!WARNING]
+        > **Draft Release:** Generated on $TIMESTAMP
+        > **Range:** \`$FROM_TAG\` ${FROM_HASH} → \`main\` ${TO_HASH}
+        >
+        > _Story status reflects commit time, not current TrackerBoot state_
+
+        ---
+        ---
+        EOF
+
+        # Generate actual changelog and append
+        npx tb-changelog \
+          --from "$FROM_TAG" \
+          --to "HEAD" \
+          >> /tmp/changelog.md
+
+      env:
+        TB_API_KEY: ${{ inputs.tb-api-key }}
+        TB_PROJECT_ID: ${{ inputs.tb-project-id }}
+
+    - name: Update or create draft release
+      shell: bash
+      run: |
+        ACTION="${{ steps.draft-release.outputs.action }}"
+        DRAFT_TITLE="${{ steps.draft-release.outputs.title }}"
+
+        if [ "$ACTION" = "update" ]; then
+          DRAFT_ID="${{ steps.draft-release.outputs.draft_id }}"
+          gh api repos/${{ github.repository }}/releases/$DRAFT_ID \
+            -X PATCH \
+            -f name="$DRAFT_TITLE" \
+            -F body=@/tmp/changelog.md
+          echo "✅ Updated draft release: $DRAFT_TITLE"
+
+        elif [ "$ACTION" = "create" ]; then
+          gh api repos/${{ github.repository }}/releases \
+            -X POST \
+            -f tag_name="" \
+            -f name="$DRAFT_TITLE" \
+            -F body=@/tmp/changelog.md \
+            -F draft=true
+          echo "✅ Created new draft release: $DRAFT_TITLE"
+
+        else
+          echo "❌ Unknown action: $ACTION"
+          exit 1
+        fi
+      env:
+        GH_TOKEN: ${{ github.token }}

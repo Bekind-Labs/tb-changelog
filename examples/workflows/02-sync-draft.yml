@@ -1,0 +1,26 @@
+name: Keep Draft Release in Sync with Latest Changes
+
+on:
+  push:
+    branches: [main] # Triggers on every push to main branch
+
+permissions:
+  contents: write # Required permissions to update the release description
+
+jobs:
+  sync-draft-changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required: Full git history for changelog generation
+
+      - name: Sync draft release with changelog
+        uses: Bekind-Labs/tb-changelog/action/tb-changelog-sync-draft@action-v1
+        with:
+          tb-api-key: ${{ secrets.TB_API_KEY }}
+          tb-project-id: ${{ secrets.TB_PROJECT_ID }}
+          # Optional: Customize the draft release
+          # draft-title: '🚧 Development Build'
+          # timezone: 'Asia/Tokyo'
