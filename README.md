@@ -9,7 +9,10 @@
   <i>Transform your git commits and Tracker Boot stories into beautiful, meaningful changelogs</i>
 </p>
 
-<!-- Badges will be added here later -->
+<p align="center">
+  <a href="https://www.npmjs.com/package/tb-changelog" ><img alt="NPM Version" src="https://img.shields.io/npm/v/tb-changelog/latest?style=flat-square&color=10a9ff"></a>
+  <img alt="License" src="https://img.shields.io/github/license/Bekind-Labs/tb-changelog?style=flat-square&color=ff8577">
+</p>
 
 ---
 
