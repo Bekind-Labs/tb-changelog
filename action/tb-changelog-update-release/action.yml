@@ -1,0 +1,84 @@
+name: 'tb-changelog-update-release'
+description: 'Auto-generate changelogs by combining git history with TrackerBoot story details for GitHub releases'
+
+inputs:
+  tb-api-key:
+    description: 'TrackerBoot API key'
+    required: true
+  tb-project-id:
+    description: 'TrackerBoot project ID'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+
+    - name: Install tb-changelog
+      shell: bash
+      run: npm install -g tb-changelog@latest
+
+    - name: Detect version range
+      id: detect-versions
+      shell: bash
+      run: |
+        # Get the latest published release tag
+        FROM_TAG=$(gh release list \
+          --exclude-drafts --exclude-pre-releases \
+          --limit 1 --order desc \
+          --json tagName --jq '.[0].tagName')
+
+        if [ -z "$FROM_TAG" ]; then
+          echo "::error::No previous releases found. Please create at least one release before using this action."
+          echo "To create your first release:"
+          echo "1. Go to https://github.com/${{ github.repository }}/releases/new"
+          echo "2. Create a release with a tag (e.g., v0.1.0)"
+          echo "3. Then this action will work for subsequent releases"
+          exit 1
+        fi
+
+        # Determine TO version based on context
+        if [ "${{ github.event_name }}" == "release" ]; then
+          # For release events, use the release tag
+          TO_TAG="${{ github.event.release.tag_name }}"
+        else
+          # For all other cases, use HEAD (current commit)
+          TO_TAG="HEAD"
+        fi
+
+        echo "from=$FROM_TAG" >> $GITHUB_OUTPUT
+        echo "to=$TO_TAG" >> $GITHUB_OUTPUT
+        echo "Generating changelog: $FROM_TAG → $TO_TAG"
+      env:
+        GH_TOKEN: ${{ github.token }}
+
+    - name: Generate changelog
+      shell: bash
+      run: |
+        # Generate changelog and save directly to file
+        npx tb-changelog \
+          --from "${{ steps.detect-versions.outputs.from }}" \
+          --to "${{ steps.detect-versions.outputs.to }}" \
+          --output /tmp/changelog.md
+
+        # Display in logs
+        echo "Generated changelog:"
+        cat /tmp/changelog.md
+      env:
+        TB_API_KEY: ${{ inputs.tb-api-key }}
+        TB_PROJECT_ID: ${{ inputs.tb-project-id }}
+
+    - name: Update GitHub Release
+      if: github.event_name == 'release'
+      shell: bash
+      run: |
+        gh release \
+          edit "${{ github.event.release.tag_name }}" \
+          --notes-file /tmp/changelog.md
+
+        echo "✅ Updated release with changelog"
+      env:
+        GH_TOKEN: ${{ github.token }}

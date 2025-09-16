@@ -1,0 +1,23 @@
+name: Generate TrackerBoot Changelog on Release
+
+on:
+  release:
+    types: [prereleased] # Triggers when a pre-release is published
+
+permissions:
+  contents: write # Required permissions to update the release description
+
+jobs:
+  update-release-changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required: Full git history for changelog generation
+
+      - name: Update release with changelog
+        uses: Bekind-Labs/tb-changelog/action/tb-changelog-update-release@action-v1
+        with:
+          tb-api-key: ${{ secrets.TB_API_KEY }}
+          tb-project-id: ${{ secrets.TB_PROJECT_ID }}
