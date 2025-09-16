@@ -15,9 +15,9 @@
 
 ## 🚀 Key Features
 
-- ✅ **Story Validation** - Ensures only accepted features ship by flagging commits without story approval
-- 📦 **Organized Release Notes** - Auto-groups features, bugs, and chores with direct links to stories and commits
-- ⚡ **Simple Setup** - Just set 3 environment variables and run - no installation or config files needed
+- 🎯 **Release Confidence** - Organizes stories by acceptance status, instantly flagging unapproved features before they ship
+- 📊 **Rapid Release Visibility** - Groups commits by story status and type, making it clear what's ready, what needs attention, and what's incomplete
+- ⚡ **Zero Friction Setup** - Just 3 environment variables to start - designed for CI/CD integration and frequent deployments
 
 ## 📸 Example Output
 
@@ -80,6 +80,30 @@ Environment Variables:
 
 Note: CLI arguments take precedence over environment variables when both are provided.
 ```
+
+## 📝 Commit Message Format
+
+This tool recognizes Tracker Boot story IDs in commit messages:
+
+```
+# Basic format - Associates commit with story (no status change)
+[#123456] Add user authentication
+
+# Mark story as finished (all keywords work the same)
+[Finishes #123456] Complete login feature
+[Fixes #123456] Resolve critical bug
+[Fix #123456] Quick patch
+
+# Multiple stories (comma-separated)
+[#123456, #123457] Update API endpoints for both features
+```
+
+**Supported keywords for marking stories as finished:**  
+`Finish`, `Finishes`, `Finished`, `Fix`, `Fixes`, `Fixed` (case-insensitive)
+
+> [!NOTE]
+> This format is based on Pivotal Tracker's specifications.  
+> Once Tracker Boot officially publishes their git integration specifications, these conventions may change.
 
 ## 🔑 Getting Your Credentials
 ### Tracker Boot Project ID
