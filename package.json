@@ -22,11 +22,11 @@
     "dist/cli.js"
   ],
   "bin": {
-    "tb-changelog": "./dist/cli.js"
+    "tb-changelog": "dist/cli.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Bekind-Labs/tb-changelog.git"
+    "url": "git+https://github.com/Bekind-Labs/tb-changelog.git"
   },
   "scripts": {
     "dev": "DEBUG=true tsx src/cli.ts",
