@@ -1,6 +1,6 @@
 {
   "name": "tb-changelog",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Generate changelog from git history and TrackerBoot API",
   "keywords": [
     "changelog",
