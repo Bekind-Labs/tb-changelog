@@ -75,6 +75,7 @@ describe("parseOptions", () => {
         { param: "to", defaultValue: "HEAD" },
         { param: "format", defaultValue: "github" },
         { param: "output", defaultValue: undefined },
+        { param: "signature", defaultValue: true },
       ])("defaults $param to $defaultValue when not specified", ({ param, defaultValue }) => {
         const result = parseOptions(baseArgs);
         expect(result).toMatchObject({ [param]: defaultValue });
@@ -107,6 +108,11 @@ describe("parseOptions", () => {
           name: "--format github-light with short form",
           args: [...baseArgs, "-f", "github-light"],
           expected: { format: "github-light" },
+        },
+        {
+          name: "--no-signature option",
+          args: [...baseArgs, "--no-signature"],
+          expected: { signature: false },
         },
       ])("accepts $name", ({ args, expected }) => {
         const result = parseOptions(args);
@@ -158,6 +164,7 @@ describe("parseOptions", () => {
         format: "github-light",
         help: false,
         version: "1.2.3",
+        signature: true,
       });
     });
   });

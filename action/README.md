@@ -19,6 +19,7 @@ with:
   tb-api-key: ${{ secrets.TB_API_KEY }}
   tb-project-id: ${{ secrets.TB_PROJECT_ID }}
   format: 'github'  # Default
+  no-signature: 'false'  # Default
 ```
 
 ### [tb-changelog-sync-draft](./tb-changelog-sync-draft/)
@@ -37,6 +38,7 @@ with:
   format: 'github'  # Default
   draft-title: '📛 Next Release Candidate'  # Default
   timezone: 'Etc/UTC'  # Default (e.g., Asia/Tokyo, America/New_York)
+  no-signature: 'false'  # Default
 ```
 
 ## License

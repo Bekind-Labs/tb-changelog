@@ -21,6 +21,4 @@ jobs:
         with:
           tb-api-key: ${{ secrets.TB_API_KEY }}
           tb-project-id: ${{ secrets.TB_PROJECT_ID }}
-          # Optional: Customize the draft release
-          # draft-title: '🚧 Development Build'
-          # timezone: 'Asia/Tokyo'
+          timezone: 'Asia/Tokyo'

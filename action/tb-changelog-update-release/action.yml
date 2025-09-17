@@ -12,6 +12,10 @@ inputs:
     description: 'Output format (github, github-light)'
     required: false
     default: 'github'
+  no-signature:
+    description: 'Disable signature in output'
+    required: false
+    default: 'false'
 
 runs:
   using: 'composite'
@@ -63,10 +67,11 @@ runs:
       shell: bash
       run: |
         # Generate changelog and save directly to file
-        npx tb-changelog \
+        tb-changelog \
           --from "${{ steps.detect-versions.outputs.from }}" \
           --to "${{ steps.detect-versions.outputs.to }}" \
           --format "${{ inputs.format }}" \
+          $( [ "${{ inputs.no-signature }}" = "true" ] && echo "--no-signature" || echo "" ) \
           --output /tmp/changelog.md
 
         # Display in logs

@@ -47,9 +47,6 @@ npx tb-changelog --from v1.0.0 --to v1.1.0 | pbcopy
 
 # Save to a file
 npx tb-changelog --from v1.0.0 --to v1.1.0 --output CHANGELOG.md
-
-# Use light format (story titles only)
-npx tb-changelog --from v1.0.0 --to v1.1.0 --format github-light
 ```
 
 ## 📸 Output Examples & Formats
@@ -92,6 +89,7 @@ Options:
   --output <file>, -o <file>       Output file path (optional)
   --format <type>, -f <type>       Output format (default: github)
                                    Options: github, github-light
+  --no-signature                   Disable signature in output
   --help, -h                       Show this help message
 
 Environment Variables:

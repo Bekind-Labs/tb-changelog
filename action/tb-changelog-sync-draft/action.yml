@@ -20,6 +20,10 @@ inputs:
     description: 'Timezone for timestamp display (e.g., Etc/UTC, Asia/Tokyo, America/New_York)'
     required: false
     default: 'Etc/UTC'
+  no-signature:
+    description: 'Disable signature in output'
+    required: false
+    default: 'false'
 
 runs:
   using: 'composite'
@@ -88,10 +92,11 @@ runs:
         EOF
 
         # Generate actual changelog and append
-        npx tb-changelog \
+        tb-changelog \
           --from "$FROM_TAG" \
           --to "HEAD" \
           --format "${{ inputs.format }}" \
+          $( [ "${{ inputs.no-signature }}" = "true" ] && echo "--no-signature" || echo "" ) \
           >> /tmp/changelog.md
 
       env:

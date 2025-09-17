@@ -13,6 +13,7 @@ Options:
   --output <file>, -o <file>       Output file path (optional)
   --format <type>, -f <type>       Output format (default: github)
                                    Options: github, github-light
+  --no-signature                   Disable signature in output
   --help, -h                       Show this help message
 
 Environment Variables:

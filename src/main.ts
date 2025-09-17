@@ -55,6 +55,7 @@ export async function main(args: string[]) {
       nonStoryCommits,
       totalCommits: commits.length,
       format: options.format,
+      signature: options.signature,
     });
 
     if (options.output) {

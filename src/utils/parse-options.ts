@@ -12,6 +12,7 @@ type Options =
       output?: string;
       format: MarkdownFormat;
       version: string;
+      signature: boolean;
     }
   | { help: true };
 export const parseOptions = (args: string[]): Options => {
@@ -40,6 +41,9 @@ export const parseOptions = (args: string[]): Options => {
       help: {
         type: "boolean",
         short: "h",
+      },
+      "no-signature": {
+        type: "boolean",
       },
     },
     allowPositionals: false,
@@ -77,5 +81,6 @@ export const parseOptions = (args: string[]): Options => {
     output: options.values.output,
     format,
     version: packageJson.version,
+    signature: !options.values["no-signature"],
   };
 };
