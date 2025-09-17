@@ -18,9 +18,21 @@ uses: Bekind-Labs/tb-changelog/action/tb-changelog-update-release@action-v1
 with:
   tb-api-key: ${{ secrets.TB_API_KEY }}
   tb-project-id: ${{ secrets.TB_PROJECT_ID }}
+  # Optional parameters
   format: 'github'  # Default
   no-signature: 'false'  # Default
+  slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
+  slack-channel: "#your-team-channel"
 ```
+
+**Slack Integration:**
+When both `slack-bot-token` and `slack-channel` are provided, the action will automatically post release notifications to your Slack channel:
+
+**Setup:**
+1. Create a Slack App and obtain a Bot Token with `chat:write` scope
+2. Invite the bot to your desired channel
+3. Add the bot token to GitHub Secrets as `SLACK_BOT_TOKEN`
+4. Specify the channel (e.g., `#releases`, `@username`) in the workflow
 
 ### [tb-changelog-sync-draft](./tb-changelog-sync-draft/)
 Automatically creates or updates draft releases with changelogs from latest release to HEAD.

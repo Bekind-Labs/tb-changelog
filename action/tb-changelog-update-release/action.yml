@@ -9,13 +9,19 @@ inputs:
     description: 'TrackerBoot project ID'
     required: true
   format:
-    description: 'Output format (github, github-light)'
+    description: 'Output format (github, github-light, slack-payload)'
     required: false
     default: 'github'
   no-signature:
     description: 'Disable signature in output'
     required: false
     default: 'false'
+  slack-bot-token:
+    description: 'Slack Bot Token for posting release notifications (optional)'
+    required: false
+  slack-channel:
+    description: 'Slack channel to post notifications (e.g., #releases or @user) (optional)'
+    required: false
 
 runs:
   using: 'composite'
@@ -33,7 +39,6 @@ runs:
       id: detect-versions
       shell: bash
       run: |
-        # Get the latest published release tag
         FROM_TAG=$(gh release list \
           --exclude-drafts --exclude-pre-releases \
           --limit 1 --order desc \
@@ -48,7 +53,6 @@ runs:
           exit 1
         fi
 
-        # Determine TO version based on context
         if [ "${{ github.event_name }}" == "release" ]; then
           # For release events, use the release tag
           TO_TAG="${{ github.event.release.tag_name }}"
@@ -59,24 +63,18 @@ runs:
 
         echo "from=$FROM_TAG" >> $GITHUB_OUTPUT
         echo "to=$TO_TAG" >> $GITHUB_OUTPUT
-        echo "Generating changelog: $FROM_TAG → $TO_TAG"
       env:
         GH_TOKEN: ${{ github.token }}
 
-    - name: Generate changelog
+    - name: Generate changelog for GitHub
       shell: bash
       run: |
-        # Generate changelog and save directly to file
         tb-changelog \
           --from "${{ steps.detect-versions.outputs.from }}" \
           --to "${{ steps.detect-versions.outputs.to }}" \
           --format "${{ inputs.format }}" \
           $( [ "${{ inputs.no-signature }}" = "true" ] && echo "--no-signature" || echo "" ) \
           --output /tmp/changelog.md
-
-        # Display in logs
-        echo "Generated changelog:"
-        cat /tmp/changelog.md
       env:
         TB_API_KEY: ${{ inputs.tb-api-key }}
         TB_PROJECT_ID: ${{ inputs.tb-project-id }}
@@ -92,3 +90,56 @@ runs:
         echo "✅ Updated release with changelog"
       env:
         GH_TOKEN: ${{ github.token }}
+
+    - name: Generate changelog for Slack
+      if: github.event_name == 'release' && inputs.slack-bot-token != '' && inputs.slack-channel != ''
+      shell: bash
+      run: |
+        tb-changelog \
+          --from "${{ steps.detect-versions.outputs.from }}" \
+          --to "${{ steps.detect-versions.outputs.to }}" \
+          --format "slack-payload" \
+          $( [ "${{ inputs.no-signature }}" = "true" ] && echo "--no-signature" || echo "" ) \
+          --output /tmp/slack-payload.json
+      env:
+        TB_API_KEY: ${{ inputs.tb-api-key }}
+        TB_PROJECT_ID: ${{ inputs.tb-project-id }}
+
+    - name: Post to Slack
+      if: github.event_name == 'release' && inputs.slack-bot-token != '' && inputs.slack-channel != ''
+      shell: bash
+      run: |
+        if [ "${{ github.event.release.prerelease }}" = "true" ]; then
+          EMOJI="🎯"
+          RELEASE_TYPE="Pre-release"
+          COLOR="#ff9500"  # Orange for pre-release
+        else
+          EMOJI="🚀"
+          RELEASE_TYPE="Release"
+          COLOR="#36a64f"  # Green for stable release
+        fi
+
+        # Get release information
+        RELEASE_URL="${{ github.event.release.html_url }}"
+        TAG_NAME="${{ github.event.release.tag_name }}"
+        REPO_NAME="${{ github.repository }}"
+        CHANNEL="${{ inputs.slack-channel }}"
+
+        # Replace placeholders in the generated JSON
+        sed -i \
+          -e "s|<your-channel>|$CHANNEL|g" \
+          -e "s|<your-color>|$COLOR|g" \
+          -e "s|<your-title>|$EMOJI $RELEASE_TYPE created: $TAG_NAME|g" \
+          -e "s|<your-release-url>|$RELEASE_URL|g" \
+          /tmp/slack-payload.json
+
+        curl -X POST \
+          -H "Authorization: Bearer ${{ inputs.slack-bot-token }}" \
+          -H "Content-Type: application/json" \
+          -d @/tmp/slack-payload.json \
+          https://slack.com/api/chat.postMessage
+
+        echo "✅ Posted release notification to Slack with Block Kit"
+      env:
+        TB_API_KEY: ${{ inputs.tb-api-key }}
+        TB_PROJECT_ID: ${{ inputs.tb-project-id }}
