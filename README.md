@@ -40,32 +40,30 @@
 
 ```bash
 # Run directly with npx (no installation required)
-npx tb-changelog --from v1.0.0 --to v1.1.0
+npx tb-changelog --from v1.0.0
 
 # Copy changelog to clipboard (macOS)
-npx tb-changelog --from v1.0.0 --to v1.1.0 | pbcopy
+npx tb-changelog --from v1.0.0 | pbcopy
 
 # Save to a file
-npx tb-changelog --from v1.0.0 --to v1.1.0 --output CHANGELOG.md
+npx tb-changelog --from v1.0.0 --output CHANGELOG.md
 ```
 
 ## 📸 Output Examples & Formats
 
 `github` (default) - Full format with commit details:
-- [📄 View complete example](examples/01-changelog.md)
 - Good for internal development tracking
+- [📄 View complete example](examples/01-changelog.md)
+- [Live demo on GitHub](https://github.com/Bekind-Labs/tb-changelog/issues/1) to experience how commit hashes become clickable links when posted in releases.
 
 `github-light` - Streamlined format with story titles only:
-- [📄 View complete example](examples/02-github-light.md)
 - Good for quick team updates
+- [📄 View complete example](examples/02-github-light.md)
 
 `slack-payload` - Slack Block Kit JSON format:
+- Good for Slack notifications via GitHub Actions
+  - Includes placeholders (`<your-channel>`, `<your-color>`, `<your-title>`, `<your-release-url>`) for dynamic values
 - [📄 View complete example](examples/03-slack-payload.md)
-- Good for Slack notifications via webhooks or GitHub Actions
-- Includes placeholders (`<your-channel>`, `<your-color>`, `<your-title>`, `<your-release-url>`) for dynamic values
-
-> [!TIP]
-> See the [live demo on GitHub](https://github.com/Bekind-Labs/tb-changelog/issues/1) to experience how commit hashes become clickable links when posted in releases.
 
 ## 🤖 GitHub Action Integration
 
