@@ -22,6 +22,10 @@ inputs:
   slack-channel:
     description: 'Slack channel to post notifications (e.g., #releases or @user) (optional)'
     required: false
+  slack-color:
+    description: 'Color for Slack message attachment (hex color code, e.g., #10b981)'
+    required: false
+    default: '#10b981'
 
 runs:
   using: 'composite'
@@ -112,14 +116,13 @@ runs:
         if [ "${{ github.event.release.prerelease }}" = "true" ]; then
           EMOJI="🎯"
           RELEASE_TYPE="Pre-release"
-          COLOR="#ff9500"  # Orange for pre-release
         else
           EMOJI="🚀"
           RELEASE_TYPE="Release"
-          COLOR="#36a64f"  # Green for stable release
         fi
 
         # Get release information
+        COLOR="${{ inputs.slack-color }}"
         RELEASE_URL="${{ github.event.release.html_url }}"
         TAG_NAME="${{ github.event.release.tag_name }}"
         REPO_NAME="${{ github.repository }}"

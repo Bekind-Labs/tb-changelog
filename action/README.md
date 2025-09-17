@@ -23,6 +23,7 @@ with:
   no-signature: 'false'  # Default
   slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
   slack-channel: "#your-team-channel"
+  slack-color: '#10b981'  # Default (hex color code)
 ```
 
 **Slack Integration:**
