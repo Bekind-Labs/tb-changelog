@@ -75,7 +75,7 @@ describe("generateMarkdown", () => {
       expect(lines[0]).toEqual("## ✅ Accepted Stories (0)");
       expect(lines[1]).toEqual("No stories.");
       expect(lines[2]).toEqual("");
-      expect(lines[3]).toEqual("---");
+      expect(lines[3]).toEqual("<br />");
     });
 
     it("shows story list when accepted stories exist", () => {
@@ -90,7 +90,7 @@ describe("generateMarkdown", () => {
       expect(lines[0]).toEqual("## ✅ Accepted Stories (3)");
       assertStoryList(lines.slice(1));
       expect(lines[8]).toEqual("");
-      expect(lines[9]).toEqual("---");
+      expect(lines[9]).toEqual("<br />");
     });
   });
 
@@ -102,7 +102,7 @@ describe("generateMarkdown", () => {
       expect(lines[0]).toEqual("## 🚨 Needs Attention (0)");
       expect(lines[1]).toEqual("No stories.");
       expect(lines[2]).toEqual("");
-      expect(lines[3]).toEqual("---");
+      expect(lines[3]).toEqual("<br />");
     });
 
     it("shows warning and story list when needs-attention stories exists", () => {
@@ -122,7 +122,7 @@ describe("generateMarkdown", () => {
       assertStoryList(lines.slice(4));
 
       expect(lines[11]).toEqual("");
-      expect(lines[12]).toEqual("---");
+      expect(lines[12]).toEqual("<br />");
     });
   });
 
@@ -134,7 +134,7 @@ describe("generateMarkdown", () => {
       expect(lines[0]).toEqual("## 🚧 Not Finished Stories (0)");
       expect(lines[1]).toEqual("No stories.");
       expect(lines[2]).toEqual("");
-      expect(lines[3]).toEqual("---");
+      expect(lines[3]).toEqual("<br />");
     });
 
     it("shows warning and story list when not-finished stories exists", () => {
@@ -154,7 +154,7 @@ describe("generateMarkdown", () => {
       assertStoryList(lines.slice(4));
 
       expect(lines[11]).toEqual("");
-      expect(lines[12]).toEqual("---");
+      expect(lines[12]).toEqual("<br />");
     });
   });
 
@@ -166,7 +166,7 @@ describe("generateMarkdown", () => {
       expect(lines[0]).toEqual("## 🛠️ Chores (0)");
       expect(lines[1]).toEqual("No stories.");
       expect(lines[2]).toEqual("");
-      expect(lines[3]).toEqual("---");
+      expect(lines[3]).toEqual("<br />");
     });
 
     it("shows chore list when chores exists", () => {
@@ -203,7 +203,7 @@ describe("generateMarkdown", () => {
       expect(lines[3]).toEqual("#### [Chore story 2](https://trackerboot.com/projects/999/stories/222) (Not finished)");
       expect(lines[4]).toEqual("- Chore commit 2 bbb");
       expect(lines[5]).toEqual("");
-      expect(lines[6]).toEqual("---");
+      expect(lines[6]).toEqual("<br />");
     });
   });
 

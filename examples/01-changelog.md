@@ -21,7 +21,7 @@
 - [#187654330] Profile dashboard rendering d62baf4
 - [fixes #187654330] Optimize queries and add caching d62baf4
 
----
+<br />
 
 ## 🚨 Needs Attention (2)
 > [!WARNING]
@@ -34,7 +34,7 @@
 - [#187654333] Initial mockup implementation d62baf4
 - [#187654333] Add animation transitions d62baf4
 
----
+<br />
 
 ## 🚧 Not Finished Stories (1)
 > [!CAUTION]
@@ -43,7 +43,7 @@
 #### 🧩 [Spamona can log in using OAuth2 providers](https://trackerboot.com)
 - [#187654334] Add OAuth provider configuration d62baf4
 
----
+<br />
 
 ## 🛠️ Chores (2)
 #### [Upgrade to React 18](https://trackerboot.com)
@@ -53,7 +53,7 @@
 - [#187654336] Add GitHub Actions workflow d62baf4
 - [#187654336] Configure test automation d62baf4
 
----
+<br />
 
 ## 🔍 Non-story Commits (7)
 - Refactor utility functions for better performance d62baf4

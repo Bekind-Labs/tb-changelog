@@ -1,5 +1,7 @@
 import type { GitCommit, Story } from "../types";
 
+const SPACER = "<br />";
+
 export const generateMarkdown = (args: {
   projectId: string;
   acceptedStories: Story[];
@@ -17,7 +19,7 @@ export const generateMarkdown = (args: {
 ## ✅ Accepted Stories (${args.acceptedStories.length})
 ${generateFromStories(args.projectId, args.acceptedStories)}
 
----
+${SPACER}
 
 ## 🚨 Needs Attention (${args.needsAttentionStories.length})
 ${generateFromStories(
@@ -30,7 +32,7 @@ ${generateFromStories(
 `.trim(),
 )}
 
----
+${SPACER}
 
 ## 🚧 Not Finished Stories (${args.notFinishedStories.length})
 ${generateFromStories(
@@ -43,12 +45,12 @@ ${generateFromStories(
 `.trim(),
 )}
 
----
+${SPACER}
 
 ## 🛠️ Chores (${args.chores.length})
 ${generateFromStories(args.projectId, args.chores)}
 
----
+${SPACER}
 
 ## 🔍 Non-story Commits (${args.nonStoryCommits.length})
 ${args.nonStoryCommits.length ? generateCommitList(args.nonStoryCommits) : "No commits."}
