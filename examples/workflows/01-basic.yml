@@ -21,3 +21,5 @@ jobs:
         with:
           tb-api-key: ${{ secrets.TB_API_KEY }}
           tb-project-id: ${{ secrets.TB_PROJECT_ID }}
+          # Optional:
+          # slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}

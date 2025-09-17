@@ -1,4 +1,5 @@
 import consola from "consola";
+import { MarkdownFormats } from "./generate-markdown";
 
 export function showHelp() {
   consola.log(
@@ -12,7 +13,7 @@ Options:
                                    Example: 123456789
   --output <file>, -o <file>       Output file path (optional)
   --format <type>, -f <type>       Output format (default: github)
-                                   Options: github, github-light
+                                   Options: ${MarkdownFormats.join(", ")}
   --no-signature                   Disable signature in output
   --help, -h                       Show this help message
 

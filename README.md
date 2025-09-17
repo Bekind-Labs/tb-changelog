@@ -59,6 +59,11 @@ npx tb-changelog --from v1.0.0 --to v1.1.0 --output CHANGELOG.md
 - [📄 View complete example](examples/02-github-light.md)
 - Good for quick team updates
 
+`slack-payload` - Slack Block Kit JSON format:
+- [📄 View complete example](examples/03-slack-payload.md)
+- Good for Slack notifications via webhooks or GitHub Actions
+- Includes placeholders (`<your-channel>`, `<your-color>`, `<your-title>`, `<your-release-url>`) for dynamic values
+
 > [!TIP]
 > See the [live demo on GitHub](https://github.com/Bekind-Labs/tb-changelog/issues/1) to experience how commit hashes become clickable links when posted in releases.
 
@@ -88,7 +93,7 @@ Options:
                                    Example: 123456789
   --output <file>, -o <file>       Output file path (optional)
   --format <type>, -f <type>       Output format (default: github)
-                                   Options: github, github-light
+                                   Options: github, github-light, slack-payload
   --no-signature                   Disable signature in output
   --help, -h                       Show this help message
 
