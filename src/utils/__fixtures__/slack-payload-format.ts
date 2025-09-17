@@ -2,9 +2,9 @@ export const slackPayloadFormatExpected = {
   empty: JSON.stringify(
     {
       channel: "<your-channel>",
-      color: "<your-color>",
       attachments: [
         {
+          color: "<your-color>",
           blocks: [
             { type: "header", text: { type: "plain_text", text: "<your-title>" } },
             {
@@ -55,9 +55,9 @@ export const slackPayloadFormatExpected = {
   full: JSON.stringify(
     {
       channel: "<your-channel>",
-      color: "<your-color>",
       attachments: [
         {
+          color: "<your-color>",
           blocks: [
             { type: "header", text: { type: "plain_text", text: "<your-title>" } },
             {

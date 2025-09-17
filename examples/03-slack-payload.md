@@ -1,9 +1,15 @@
+## Slack Payload Format
+This format generates Slack Block Kit JSON for rich release notifications. The image below shows how it looks when posted to Slack with placeholders filled in by GitHub Action.
+
+![Slack notification example](./03-slack-payload@2x.png)
+
+### Sample JSON Output
 ```json
 {
   "channel": "<your-channel>",
-  "color": "<your-color>",
   "attachments": [
     {
+      "color": "<your-color>",
       "blocks": [
         {
           "type": "header",

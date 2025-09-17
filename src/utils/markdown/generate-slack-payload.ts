@@ -98,7 +98,7 @@ export const generateSlackPayload = ({ projectId, ...args }: MarkdownGeneratorPa
     });
   }
 
-  const payload = { channel: "<your-channel>", color: "<your-color>", attachments: [{ blocks }] };
+  const payload = { channel: "<your-channel>", attachments: [{ color: "<your-color>", blocks }] };
   return JSON.stringify(payload, null, 2);
 };
 
