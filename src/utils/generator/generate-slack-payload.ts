@@ -1,5 +1,5 @@
 import type { Story } from "../../types";
-import type { MarkdownGeneratorParameters } from "../generate-markdown";
+import type { OutputGeneratorParameters } from "../generate-output";
 import { createUrl, getStoryIcon } from "./utils";
 
 const BlockType = {
@@ -11,7 +11,7 @@ const DIVIDER_BLOCK = { type: "divider" };
 const NO_STORY_BLOCK = (text: string) => ({ type: "section", text: { type: BlockType.PlainText, text } });
 const SPACER_BLOCK = { type: "section", text: { type: BlockType.PlainText, text: " " } };
 
-export const generateSlackPayload = ({ projectId, ...args }: MarkdownGeneratorParameters): string => {
+export const generateSlackPayload = ({ projectId, ...args }: OutputGeneratorParameters): string => {
   const blocks: object[] = [
     { type: "header", text: { type: BlockType.PlainText, text: "<your-title>" } },
     {
@@ -31,7 +31,7 @@ export const generateSlackPayload = ({ projectId, ...args }: MarkdownGeneratorPa
   blocks.push(
     ...generateStorySectionBlock({
       projectId,
-      title: `✅ *Accepted Stories (${args.acceptedStories.length})*`,
+      title: `✅ *Accepted Stories*`,
       stories: args.acceptedStories,
     }),
   );
@@ -39,7 +39,7 @@ export const generateSlackPayload = ({ projectId, ...args }: MarkdownGeneratorPa
   blocks.push(
     ...generateStorySectionBlock({
       projectId,
-      title: `🚨 *Needs Attention (${args.needsAttentionStories.length})*`,
+      title: `🚨 *Needs Attention*`,
       stories: args.needsAttentionStories,
       warningText: "These stories show *mismatches*: finish commits and story status do not align.",
     }),
@@ -48,7 +48,7 @@ export const generateSlackPayload = ({ projectId, ...args }: MarkdownGeneratorPa
   blocks.push(
     ...generateStorySectionBlock({
       projectId,
-      title: `🚧 *Not Finished Stories (${args.notFinishedStories.length})*`,
+      title: `🚧 *Not Finished Stories*`,
       stories: args.notFinishedStories,
       warningText: "These stories are *not completed*: no finish commit and not accepted.",
     }),
@@ -57,7 +57,7 @@ export const generateSlackPayload = ({ projectId, ...args }: MarkdownGeneratorPa
   blocks.push(
     ...generateStorySectionBlock({
       projectId,
-      title: `🛠️ *Chores (${args.chores.length})*`,
+      title: `🛠️ *Chores*`,
       stories: args.chores,
       isChore: true,
     }),
@@ -65,7 +65,7 @@ export const generateSlackPayload = ({ projectId, ...args }: MarkdownGeneratorPa
 
   blocks.push({
     type: "section",
-    text: { type: BlockType.Markdown, text: `🔍 *Non-story Commits (${args.nonStoryCommits.length})*` },
+    text: { type: BlockType.Markdown, text: `🔍 *Non-story Commits* (${args.nonStoryCommits.length})` },
   });
 
   if (args.nonStoryCommits.length > 0) {
@@ -115,7 +115,9 @@ const generateStorySectionBlock = ({
   warningText?: string;
   isChore?: boolean;
 }): object[] => {
-  const blocks: object[] = [{ type: "section", text: { type: BlockType.Markdown, text: title } }];
+  const blocks: object[] = [
+    { type: "section", text: { type: BlockType.Markdown, text: `${title} (${stories.length})` } },
+  ];
 
   if (stories.length === 0) {
     return [...blocks, NO_STORY_BLOCK(isChore ? "No chores." : "No stories."), SPACER_BLOCK, DIVIDER_BLOCK];

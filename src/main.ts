@@ -5,7 +5,7 @@ import { fetchStoriesFromApi } from "./repositories/fetch-stories-from-api";
 import { getCommits } from "./repositories/get-commits";
 import { combineAllInformation } from "./utils/combine-all-information";
 import { extractGitCommits } from "./utils/extract-git-commits";
-import { generateMarkdown } from "./utils/generate-markdown";
+import { generateOutput } from "./utils/generate-output";
 import { parseOptions } from "./utils/parse-options";
 import { showHelp } from "./utils/show-help";
 
@@ -46,7 +46,7 @@ export async function main(args: string[]) {
       tbStories,
     );
 
-    const markdown = generateMarkdown({
+    const markdown = generateOutput({
       projectId: options.tbProjectId,
       acceptedStories,
       needsAttentionStories,

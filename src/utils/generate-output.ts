@@ -1,11 +1,11 @@
 import type { GitCommit, Story } from "../types";
-import { generateGithubLightMarkdown, generateGithubMarkdown } from "./markdown/generate-github-markdown";
-import { generateSlackPayload } from "./markdown/generate-slack-payload";
+import { generateGithubMarkdown } from "./generator/generate-github-markdown";
+import { generateSlackPayload } from "./generator/generate-slack-payload";
 
 export const MarkdownFormats = ["github", "github-light", "slack-payload"] as const;
 export type MarkdownFormat = (typeof MarkdownFormats)[number];
 
-export type GenerateMarkdownParameters = {
+export type GenerateOutputParameters = {
   projectId: string;
   acceptedStories: Story[];
   needsAttentionStories: Story[];
@@ -16,14 +16,14 @@ export type GenerateMarkdownParameters = {
   signature: boolean;
   format: MarkdownFormat;
 };
-export type MarkdownGeneratorParameters = Omit<GenerateMarkdownParameters, "format">;
+export type OutputGeneratorParameters = Omit<GenerateOutputParameters, "format">;
 
-export const generateMarkdown = ({ format, ...args }: GenerateMarkdownParameters): string => {
+export const generateOutput = ({ format, ...args }: GenerateOutputParameters): string => {
   switch (format) {
     case "github":
-      return generateGithubMarkdown(args);
+      return generateGithubMarkdown(args, false);
     case "github-light":
-      return generateGithubLightMarkdown(args);
+      return generateGithubMarkdown(args, true);
     case "slack-payload":
       return generateSlackPayload(args);
     default: {

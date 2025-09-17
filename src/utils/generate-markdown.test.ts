@@ -3,7 +3,7 @@ import { buildGitCommit, buildTBStory } from "../testUtils/builders";
 import { githubFormatExpected } from "./__fixtures__/github-format";
 import { githubLightFormatExpected } from "./__fixtures__/github-light-format";
 import { slackPayloadFormatExpected } from "./__fixtures__/slack-payload-format";
-import { generateMarkdown, type MarkdownFormat, MarkdownFormats } from "./generate-markdown";
+import { generateOutput, type MarkdownFormat, MarkdownFormats } from "./generate-output";
 
 describe("generateMarkdown", () => {
   const expectedOutputs: Record<MarkdownFormat, { empty: string; full: string }> = {
@@ -16,7 +16,7 @@ describe("generateMarkdown", () => {
     const expected = expectedOutputs[format];
 
     it("handles empty data correctly", () => {
-      const result = generateMarkdown({
+      const result = generateOutput({
         projectId: "90001111",
         acceptedStories: [],
         needsAttentionStories: [],
@@ -32,7 +32,7 @@ describe("generateMarkdown", () => {
     });
 
     it("handles full data correctly", () => {
-      const result = generateMarkdown({
+      const result = generateOutput({
         projectId: "90001111",
         acceptedStories: [
           {
@@ -79,7 +79,7 @@ describe("generateMarkdown", () => {
     });
 
     it("excludes signature when disabled", () => {
-      const result = generateMarkdown({
+      const result = generateOutput({
         projectId: "90001111",
         acceptedStories: [],
         needsAttentionStories: [],

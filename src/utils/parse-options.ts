@@ -1,6 +1,6 @@
 import { parseArgs } from "node:util";
 import packageJson from "../../package.json" with { type: "json" };
-import { type MarkdownFormat, MarkdownFormats } from "./generate-markdown";
+import { type MarkdownFormat, MarkdownFormats } from "./generate-output";
 
 type Options =
   | {

@@ -41,7 +41,7 @@ No commits.
 
 ## 🚨 Needs Attention (1)
 > [!WARNING]
-> These stories show **mismatches**: finish commits and stort status do not align.
+> These stories show **mismatches**: finish commits and stort status do not align.  
 > Please review and resolve before release.
 - 🎨 [Design story 2](https://trackerboot.com/projects/90001111/stories/333)
 
@@ -49,7 +49,7 @@ No commits.
 
 ## 🚧 Not Finished Stories (1)
 > [!CAUTION]
-> These stories are **not completed**: no finish commit and not accepted.
+> These stories are **not completed**: no finish commit and not accepted.  
 > Please confirm whether they can be released as-is.
 - 🦋 [Bug story 1](https://trackerboot.com/projects/90001111/stories/444)
 

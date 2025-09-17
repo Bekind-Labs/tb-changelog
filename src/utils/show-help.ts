@@ -1,5 +1,5 @@
 import consola from "consola";
-import { MarkdownFormats } from "./generate-markdown";
+import { MarkdownFormats } from "./generate-output";
 
 export function showHelp() {
   consola.log(

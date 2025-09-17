@@ -19,23 +19,23 @@ export const slackPayloadFormatExpected = {
             },
             { type: "context", elements: [{ type: "mrkdwn", text: "View details on GitHub: <your-release-url>" }] },
             { type: "divider" },
-            { type: "section", text: { type: "mrkdwn", text: "✅ *Accepted Stories (0)*" } },
+            { type: "section", text: { type: "mrkdwn", text: "✅ *Accepted Stories* (0)" } },
             { type: "section", text: { type: "plain_text", text: "No stories." } },
             { type: "section", text: { type: "plain_text", text: " " } },
             { type: "divider" },
-            { type: "section", text: { type: "mrkdwn", text: "🚨 *Needs Attention (0)*" } },
+            { type: "section", text: { type: "mrkdwn", text: "🚨 *Needs Attention* (0)" } },
             { type: "section", text: { type: "plain_text", text: "No stories." } },
             { type: "section", text: { type: "plain_text", text: " " } },
             { type: "divider" },
-            { type: "section", text: { type: "mrkdwn", text: "🚧 *Not Finished Stories (0)*" } },
+            { type: "section", text: { type: "mrkdwn", text: "🚧 *Not Finished Stories* (0)" } },
             { type: "section", text: { type: "plain_text", text: "No stories." } },
             { type: "section", text: { type: "plain_text", text: " " } },
             { type: "divider" },
-            { type: "section", text: { type: "mrkdwn", text: "🛠️ *Chores (0)*" } },
+            { type: "section", text: { type: "mrkdwn", text: "🛠️ *Chores* (0)" } },
             { type: "section", text: { type: "plain_text", text: "No chores." } },
             { type: "section", text: { type: "plain_text", text: " " } },
             { type: "divider" },
-            { type: "section", text: { type: "mrkdwn", text: "🔍 *Non-story Commits (0)*" } },
+            { type: "section", text: { type: "mrkdwn", text: "🔍 *Non-story Commits* (0)" } },
             { type: "section", text: { type: "plain_text", text: "No commits." } },
             { type: "section", text: { type: "plain_text", text: " " } },
             { type: "divider" },
@@ -72,7 +72,7 @@ export const slackPayloadFormatExpected = {
             },
             { type: "context", elements: [{ type: "mrkdwn", text: "View details on GitHub: <your-release-url>" }] },
             { type: "divider" },
-            { type: "section", text: { type: "mrkdwn", text: "✅ *Accepted Stories (2)*" } },
+            { type: "section", text: { type: "mrkdwn", text: "✅ *Accepted Stories* (2)" } },
             {
               type: "rich_text",
               elements: [
@@ -110,7 +110,7 @@ export const slackPayloadFormatExpected = {
             },
             { type: "section", text: { type: "plain_text", text: " " } },
             { type: "divider" },
-            { type: "section", text: { type: "mrkdwn", text: "🚨 *Needs Attention (1)*" } },
+            { type: "section", text: { type: "mrkdwn", text: "🚨 *Needs Attention* (1)" } },
             {
               type: "context",
               elements: [
@@ -146,7 +146,7 @@ export const slackPayloadFormatExpected = {
             },
             { type: "section", text: { type: "plain_text", text: " " } },
             { type: "divider" },
-            { type: "section", text: { type: "mrkdwn", text: "🚧 *Not Finished Stories (1)*" } },
+            { type: "section", text: { type: "mrkdwn", text: "🚧 *Not Finished Stories* (1)" } },
             {
               type: "context",
               elements: [
@@ -179,7 +179,7 @@ export const slackPayloadFormatExpected = {
             },
             { type: "section", text: { type: "plain_text", text: " " } },
             { type: "divider" },
-            { type: "section", text: { type: "mrkdwn", text: "🛠️ *Chores (2)*" } },
+            { type: "section", text: { type: "mrkdwn", text: "🛠️ *Chores* (2)" } },
             {
               type: "rich_text",
               elements: [
@@ -216,7 +216,7 @@ export const slackPayloadFormatExpected = {
             },
             { type: "section", text: { type: "plain_text", text: " " } },
             { type: "divider" },
-            { type: "section", text: { type: "mrkdwn", text: "🔍 *Non-story Commits (1)*" } },
+            { type: "section", text: { type: "mrkdwn", text: "🔍 *Non-story Commits* (1)" } },
             {
               type: "rich_text",
               elements: [

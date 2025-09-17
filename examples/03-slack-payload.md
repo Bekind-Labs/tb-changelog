@@ -59,7 +59,7 @@ This format generates Slack Block Kit JSON for rich release notifications. The i
           "type": "section",
           "text": {
             "type": "mrkdwn",
-            "text": "✅ *Accepted Stories (6)*"
+            "text": "✅ *Accepted Stories* (6)"
           }
         },
         {
@@ -173,7 +173,7 @@ This format generates Slack Block Kit JSON for rich release notifications. The i
           "type": "section",
           "text": {
             "type": "mrkdwn",
-            "text": "🚨 *Needs Attention (2)*"
+            "text": "🚨 *Needs Attention* (2)"
           }
         },
         {
@@ -240,7 +240,7 @@ This format generates Slack Block Kit JSON for rich release notifications. The i
           "type": "section",
           "text": {
             "type": "mrkdwn",
-            "text": "🚧 *Not Finished Stories (1)*"
+            "text": "🚧 *Not Finished Stories* (1)"
           }
         },
         {
@@ -293,7 +293,7 @@ This format generates Slack Block Kit JSON for rich release notifications. The i
           "type": "section",
           "text": {
             "type": "mrkdwn",
-            "text": "🛠️ *Chores (2)*"
+            "text": "🛠️ *Chores* (2)"
           }
         },
         {
@@ -347,7 +347,7 @@ This format generates Slack Block Kit JSON for rich release notifications. The i
           "type": "section",
           "text": {
             "type": "mrkdwn",
-            "text": "🔍 *Non-story Commits (7)*"
+            "text": "🔍 *Non-story Commits* (7)"
           }
         },
         {
