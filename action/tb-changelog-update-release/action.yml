@@ -8,6 +8,10 @@ inputs:
   tb-project-id:
     description: 'TrackerBoot project ID'
     required: true
+  format:
+    description: 'Output format (github, github-light)'
+    required: false
+    default: 'github'
 
 runs:
   using: 'composite'
@@ -62,6 +66,7 @@ runs:
         npx tb-changelog \
           --from "${{ steps.detect-versions.outputs.from }}" \
           --to "${{ steps.detect-versions.outputs.to }}" \
+          --format "${{ inputs.format }}" \
           --output /tmp/changelog.md
 
         # Display in logs

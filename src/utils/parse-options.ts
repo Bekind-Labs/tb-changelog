@@ -1,5 +1,6 @@
 import { parseArgs } from "node:util";
 import packageJson from "../../package.json" with { type: "json" };
+import { type MarkdownFormat, MarkdownFormats } from "./generate-markdown";
 
 type Options =
   | {
@@ -9,6 +10,7 @@ type Options =
       apiKey: string;
       tbProjectId: string;
       output?: string;
+      format: MarkdownFormat;
       version: string;
     }
   | { help: true };
@@ -29,6 +31,11 @@ export const parseOptions = (args: string[]): Options => {
       output: {
         type: "string",
         short: "o",
+      },
+      format: {
+        type: "string",
+        short: "f",
+        default: "github",
       },
       help: {
         type: "boolean",
@@ -56,6 +63,11 @@ export const parseOptions = (args: string[]): Options => {
     throw new Error("--from option is required");
   }
 
+  const format = options.values.format as MarkdownFormat;
+  if (!MarkdownFormats.includes(format)) {
+    throw new Error(`Invalid format: ${format}. Valid options are: ${MarkdownFormats.join(", ")}`);
+  }
+
   return {
     apiKey: process.env.TB_API_KEY,
     from: options.values.from,
@@ -63,6 +75,7 @@ export const parseOptions = (args: string[]): Options => {
     tbProjectId,
     help: false,
     output: options.values.output,
+    format,
     version: packageJson.version,
   };
 };

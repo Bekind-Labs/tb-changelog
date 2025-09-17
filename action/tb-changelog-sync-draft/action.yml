@@ -12,6 +12,10 @@ inputs:
     description: 'Title for the draft release'
     required: false
     default: '📛 Next Release Candidate'
+  format:
+    description: 'Output format (github, github-light)'
+    required: false
+    default: 'github'
   timezone:
     description: 'Timezone for timestamp display (e.g., Etc/UTC, Asia/Tokyo, America/New_York)'
     required: false
@@ -87,6 +91,7 @@ runs:
         npx tb-changelog \
           --from "$FROM_TAG" \
           --to "HEAD" \
+          --format "${{ inputs.format }}" \
           >> /tmp/changelog.md
 
       env:

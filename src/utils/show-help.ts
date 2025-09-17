@@ -11,6 +11,8 @@ Options:
   --tb-project-id <id>             TrackerBoot project ID
                                    Example: 123456789
   --output <file>, -o <file>       Output file path (optional)
+  --format <type>, -f <type>       Output format (default: github)
+                                   Options: github, github-light
   --help, -h                       Show this help message
 
 Environment Variables:

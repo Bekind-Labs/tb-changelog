@@ -54,6 +54,7 @@ export async function main(args: string[]) {
       chores,
       nonStoryCommits,
       totalCommits: commits.length,
+      format: options.format,
     });
 
     if (options.output) {
