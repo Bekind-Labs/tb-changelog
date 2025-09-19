@@ -1,6 +1,6 @@
 import type { GitCommit, GitStory, Story, TBStory } from "../types";
 
-export type ReleaseInfo = {
+export type CategorizedStories = {
   acceptedStories: Story[];
   needsAttentionStories: Story[];
   notFinishedStories: Story[];
@@ -8,12 +8,12 @@ export type ReleaseInfo = {
   nonStoryCommits: GitCommit[];
   totalCommits: number;
 };
-export function combineAllInformation(
+export function combineInformation(
   allCommits: GitCommit[],
   storiesWithCommits: GitStory[],
   nonStoryCommits: GitCommit[],
   tbStories: TBStory[],
-): ReleaseInfo {
+): CategorizedStories {
   const storyInfoMap = new Map(tbStories.map((story) => [story.id, story]));
 
   const acceptedStories: Story[] = [];

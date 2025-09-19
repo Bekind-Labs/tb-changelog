@@ -5,7 +5,7 @@ import { fetchStoriesFromApi } from "./repositories/fetch-stories-from-api";
 import { getCommits } from "./repositories/get-commits";
 import type { TBStory } from "./types";
 import { loadCacheIfExists, saveCache } from "./utils/cache";
-import { combineAllInformation, type ReleaseInfo } from "./utils/combine-all-information";
+import { type CategorizedStories, combineInformation } from "./utils/combine-all-information";
 import { extractGitCommits } from "./utils/extract-git-commits";
 import { generateOutput } from "./utils/generate-output";
 import { parseOptions } from "./utils/parse-options";
@@ -29,18 +29,18 @@ export async function main(args: string[]) {
       `Generating changelog: ${colorize("blue", options.from)} → ${colorize("green", options.to)}${options.useCache ? " (using cache)" : ""}`,
     );
 
-    let releaseInfo: ReleaseInfo | null = null;
+    let categorizedStories: CategorizedStories | null = null;
 
     if (options.useCache) {
       const cacheData = await loadCacheIfExists(options, CACHE_FILE);
 
       if (cacheData) {
         consola.success(`Found and matched cache (${cacheData.key}). Using cached data.`);
-        releaseInfo = cacheData.data;
+        categorizedStories = cacheData.data;
       }
     }
 
-    if (!releaseInfo) {
+    if (!categorizedStories) {
       const commits = await getCommits(options);
       consola.success(`Found ${colorize("blue", `${commits.length} commits`)} from git`);
 
@@ -55,22 +55,22 @@ export async function main(args: string[]) {
         consola.success({ message: "No stories to fetch from TrackerBoot. Skipping API call." });
       } else {
         consola.debug(colorize("dim", "Fetching stories from TrackerBoot API..."));
-        tbStories = await fetchStoriesFromApi(options.tbProjectId, options.apiKey);
+        tbStories = await fetchStoriesFromApi(options.projectId, options.apiKey);
         consola.success({ message: `Retrieved ${colorize("blue", `${tbStories.length} stories`)} from TrackerBoot` });
       }
 
-      releaseInfo = combineAllInformation(commits, gitStories, nonStoryCommits, tbStories);
+      categorizedStories = combineInformation(commits, gitStories, nonStoryCommits, tbStories);
 
       if (options.useCache) {
-        await saveCache(options, releaseInfo, CACHE_FILE);
+        await saveCache(options, categorizedStories, CACHE_FILE);
       }
     }
 
-    if (!releaseInfo) {
+    if (!categorizedStories) {
       throw new Error("Failed to combine all information.");
     }
 
-    const markdown = generateOutput({ ...options, releaseInfo });
+    const markdown = generateOutput({ ...options, categorizedStories });
 
     if (options.output) {
       await writeFile(options.output, markdown, "utf-8");

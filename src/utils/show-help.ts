@@ -1,5 +1,5 @@
 import consola from "consola";
-import { MarkdownFormats } from "./generate-output";
+import { FORMATS } from "./generate-output";
 
 export function showHelp() {
   consola.log(
@@ -13,7 +13,7 @@ Options:
                                    Example: 123456789
   --output <file>, -o <file>       Output file path (optional)
   --format <type>, -f <type>       Output format (default: github)
-                                   Options: ${MarkdownFormats.join(", ")}
+                                   Options: ${FORMATS.join(", ")}
   --no-signature                   Disable signature in output
   --use-cache                      Cache processed data (CI only - no expiration)
                                    For generating multiple formats in same run

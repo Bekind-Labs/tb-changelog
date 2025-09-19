@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { buildGitCommit, buildGitStory, buildTBStory } from "../testUtils/builders";
-import { combineAllInformation } from "./combine-all-information";
+import { combineInformation } from "./combine-all-information";
 
-describe("combineAllInformation", () => {
+describe("combineInformation", () => {
   it("returns empty results when no data provided", () => {
-    const result = combineAllInformation([], [], [], []);
+    const result = combineInformation([], [], [], []);
 
     expect(result.acceptedStories).toHaveLength(0);
     expect(result.needsAttentionStories).toHaveLength(0);
@@ -16,7 +16,7 @@ describe("combineAllInformation", () => {
 
   describe("categorizes accepted stories correctly", () => {
     it("includes stories that are both accepted and finished", () => {
-      const result = combineAllInformation(
+      const result = combineInformation(
         [],
         [
           buildGitStory({
@@ -53,7 +53,7 @@ describe("combineAllInformation", () => {
     });
 
     it("excludes chore type stories from accepted stories even when conditions match", () => {
-      const result = combineAllInformation(
+      const result = combineInformation(
         [],
         [
           buildGitStory({
@@ -72,7 +72,7 @@ describe("combineAllInformation", () => {
 
   describe("categorizes stories needing attention", () => {
     it("flags stories that are finished but not accepted", () => {
-      const result = combineAllInformation(
+      const result = combineInformation(
         [],
         [
           buildGitStory({
@@ -96,7 +96,7 @@ describe("combineAllInformation", () => {
     });
 
     it("flags stories that are accepted but not finished", () => {
-      const result = combineAllInformation(
+      const result = combineInformation(
         [],
         [
           buildGitStory({
@@ -127,7 +127,7 @@ describe("combineAllInformation", () => {
   });
 
   it("categorizes stories that are unfinished correctly", () => {
-    const result = combineAllInformation(
+    const result = combineInformation(
       [],
       [
         buildGitStory({
@@ -152,7 +152,7 @@ describe("combineAllInformation", () => {
   });
 
   it("categorizes all chores regardless of status", () => {
-    const result = combineAllInformation(
+    const result = combineInformation(
       [],
       [
         buildGitStory({ id: "111" }),
@@ -184,7 +184,7 @@ describe("combineAllInformation", () => {
   });
 
   it("categorizes commits without story references", () => {
-    const result = combineAllInformation(
+    const result = combineInformation(
       [],
       [buildGitStory({ id: "123", commits: [buildGitCommit({})] })],
       [
@@ -199,7 +199,7 @@ describe("combineAllInformation", () => {
   });
 
   it("returns correct total commit count", () => {
-    const result = combineAllInformation(Array(10).fill(buildGitStory({})), [], [], []);
+    const result = combineInformation(Array(10).fill(buildGitStory({})), [], [], []);
 
     expect(result.totalCommits).toEqual(10);
   });

@@ -52,13 +52,13 @@ describe("parseOptions", () => {
       it("uses TB_PROJECT_ID from environment when CLI option not provided", () => {
         vi.stubEnv("TB_PROJECT_ID", "env-project-id");
         const result = parseOptions(["--from", "v1.0.0"]);
-        expect(result).toMatchObject({ tbProjectId: "env-project-id" });
+        expect(result).toMatchObject({ projectId: "env-project-id" });
       });
 
       it("prefers CLI --tb-project-id over environment TB_PROJECT_ID", () => {
         vi.stubEnv("TB_PROJECT_ID", "env-project-id");
         const result = parseOptions(["--from", "v1.0.0", "--tb-project-id", "cli-project-id"]);
-        expect(result).toMatchObject({ tbProjectId: "cli-project-id" });
+        expect(result).toMatchObject({ projectId: "cli-project-id" });
       });
     });
   });
@@ -75,7 +75,7 @@ describe("parseOptions", () => {
         { param: "to", defaultValue: "HEAD" },
         { param: "format", defaultValue: "github" },
         { param: "output", defaultValue: undefined },
-        { param: "signature", defaultValue: true },
+        { param: "includeSignature", defaultValue: true },
         { param: "useCache", defaultValue: false },
       ])("defaults $param to $defaultValue when not specified", ({ param, defaultValue }) => {
         const result = parseOptions(baseArgs);
@@ -113,7 +113,7 @@ describe("parseOptions", () => {
         {
           name: "--no-signature option",
           args: [...baseArgs, "--no-signature"],
-          expected: { signature: false },
+          expected: { includeSignature: false },
         },
         {
           name: "--use-cache option",
@@ -165,12 +165,12 @@ describe("parseOptions", () => {
         apiKey: "test-key",
         from: "v1.0.0",
         to: "v2.0.0",
-        tbProjectId: "123456",
+        projectId: "123456",
         output: "./changelog.md",
         format: "github-light",
         help: false,
         version: "1.2.3",
-        signature: true,
+        includeSignature: true,
         useCache: false,
       });
     });

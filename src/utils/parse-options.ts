@@ -1,6 +1,6 @@
 import { parseArgs } from "node:util";
 import packageJson from "../../package.json" with { type: "json" };
-import { type MarkdownFormat, MarkdownFormats } from "./generate-output";
+import { FORMATS, type Format } from "./generate-output";
 
 type Options =
   | {
@@ -8,11 +8,11 @@ type Options =
       from: string;
       to: string;
       apiKey: string;
-      tbProjectId: string;
+      projectId: string;
       output?: string;
-      format: MarkdownFormat;
+      format: Format;
       version: string;
-      signature: boolean;
+      includeSignature: boolean;
       useCache: boolean;
     }
   | { help: true };
@@ -62,9 +62,9 @@ export const parseOptions = (args: string[]): Options => {
     throw new Error("TB_API_KEY environment variable is required");
   }
 
-  const tbProjectId = options.values["tb-project-id"] || process.env.TB_PROJECT_ID;
+  const projectId = options.values["tb-project-id"] || process.env.TB_PROJECT_ID;
 
-  if (!tbProjectId) {
+  if (!projectId) {
     throw new Error("tb-project-id is required (use --tb-project-id or set TB_PROJECT_ID)");
   }
 
@@ -72,21 +72,21 @@ export const parseOptions = (args: string[]): Options => {
     throw new Error("--from option is required");
   }
 
-  const format = options.values.format as MarkdownFormat;
-  if (!MarkdownFormats.includes(format)) {
-    throw new Error(`Invalid format: ${format}. Valid options are: ${MarkdownFormats.join(", ")}`);
+  const format = options.values.format as Format;
+  if (!FORMATS.includes(format)) {
+    throw new Error(`Invalid format: ${format}. Valid options are: ${FORMATS.join(", ")}`);
   }
 
   return {
     apiKey: process.env.TB_API_KEY,
     from: options.values.from,
     to: options.values.to,
-    tbProjectId,
+    projectId,
     help: false,
     output: options.values.output,
     format,
     version: packageJson.version,
-    signature: !options.values["no-signature"],
+    includeSignature: !options.values["no-signature"],
     useCache: options.values["use-cache"],
   };
 };

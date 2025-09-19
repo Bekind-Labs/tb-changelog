@@ -3,22 +3,22 @@ import { buildGitCommit, buildTBStory } from "../testUtils/builders";
 import { githubFormatExpected } from "./__fixtures__/github-format";
 import { githubLightFormatExpected } from "./__fixtures__/github-light-format";
 import { slackPayloadFormatExpected } from "./__fixtures__/slack-payload-format";
-import { generateOutput, type MarkdownFormat, MarkdownFormats } from "./generate-output";
+import { FORMATS, type Format, generateOutput } from "./generate-output";
 
 describe("generateMarkdown", () => {
-  const expectedOutputs: Record<MarkdownFormat, { empty: string; full: string }> = {
+  const expectedOutputs: Record<Format, { empty: string; full: string }> = {
     github: githubFormatExpected,
     "github-light": githubLightFormatExpected,
     "slack-payload": slackPayloadFormatExpected,
   };
 
-  describe.each(MarkdownFormats)("format: %s", (format) => {
+  describe.each(FORMATS)("format: %s", (format) => {
     const expected = expectedOutputs[format];
 
     it("handles empty data correctly", () => {
       const result = generateOutput({
-        tbProjectId: "90001111",
-        releaseInfo: {
+        projectId: "90001111",
+        categorizedStories: {
           acceptedStories: [],
           needsAttentionStories: [],
           notFinishedStories: [],
@@ -27,7 +27,7 @@ describe("generateMarkdown", () => {
           totalCommits: 0,
         },
         format,
-        signature: true,
+        includeSignature: true,
       });
 
       expect(result).toBe(expected.empty);
@@ -35,8 +35,8 @@ describe("generateMarkdown", () => {
 
     it("handles full data correctly", () => {
       const result = generateOutput({
-        tbProjectId: "90001111",
-        releaseInfo: {
+        projectId: "90001111",
+        categorizedStories: {
           acceptedStories: [
             {
               ...buildTBStory({ id: "111", storyType: "Feature", title: "Feature story 1" }),
@@ -76,7 +76,7 @@ describe("generateMarkdown", () => {
           totalCommits: 8,
         },
         format,
-        signature: true,
+        includeSignature: true,
       });
 
       expect(result).toBe(expected.full);
@@ -84,8 +84,8 @@ describe("generateMarkdown", () => {
 
     it("excludes signature when disabled", () => {
       const result = generateOutput({
-        tbProjectId: "90001111",
-        releaseInfo: {
+        projectId: "90001111",
+        categorizedStories: {
           acceptedStories: [],
           needsAttentionStories: [],
           notFinishedStories: [],
@@ -94,7 +94,7 @@ describe("generateMarkdown", () => {
           totalCommits: 0,
         },
         format,
-        signature: false,
+        includeSignature: false,
       });
 
       if (format === "slack-payload") {

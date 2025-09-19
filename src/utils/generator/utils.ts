@@ -1,6 +1,6 @@
 import type { Story } from "../../types";
 
-export const createUrl = (projectId: string, storyId: string) =>
+export const generateUrl = (projectId: string, storyId: string) =>
   `https://trackerboot.com/projects/${projectId}/stories/${storyId}`;
 
 const storyIcons = {

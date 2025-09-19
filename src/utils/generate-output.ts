@@ -1,19 +1,19 @@
-import type { ReleaseInfo } from "./combine-all-information";
+import type { CategorizedStories } from "./combine-all-information";
 import { generateGithubMarkdown } from "./generator/generate-github-markdown";
 import { generateSlackPayload } from "./generator/generate-slack-payload";
 
-export const MarkdownFormats = ["github", "github-light", "slack-payload"] as const;
-export type MarkdownFormat = (typeof MarkdownFormats)[number];
+export const FORMATS = ["github", "github-light", "slack-payload"] as const;
+export type Format = (typeof FORMATS)[number];
 
-export type GenerateOutputParameters = {
-  tbProjectId: string;
-  releaseInfo: ReleaseInfo;
-  signature: boolean;
-  format: MarkdownFormat;
+export type OutputParameters = {
+  projectId: string;
+  categorizedStories: CategorizedStories;
+  includeSignature: boolean;
+  format: Format;
 };
-export type OutputGeneratorParameters = Omit<GenerateOutputParameters, "format">;
+export type OutputGeneratorParameters = Omit<OutputParameters, "format">;
 
-export const generateOutput = ({ format, ...args }: GenerateOutputParameters): string => {
+export const generateOutput = ({ format, ...args }: OutputParameters): string => {
   switch (format) {
     case "github":
       return generateGithubMarkdown(args, false);

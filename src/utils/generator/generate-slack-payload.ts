@@ -1,78 +1,71 @@
 import type { Story } from "../../types";
 import type { OutputGeneratorParameters } from "../generate-output";
-import { createUrl, getStoryIcon } from "./utils";
+import { generateUrl, getStoryIcon } from "./utils";
 
-const BlockType = {
-  PlainText: "plain_text",
-  Markdown: "mrkdwn",
-} as const;
-
+const BlockType = { PlainText: "plain_text", Markdown: "mrkdwn" } as const;
 const DIVIDER_BLOCK = { type: "divider" };
 const NO_STORY_BLOCK = (text: string) => ({ type: "section", text: { type: BlockType.PlainText, text } });
 const SPACER_BLOCK = { type: "section", text: { type: BlockType.PlainText, text: " " } };
 
 export const generateSlackPayload = ({
-  tbProjectId,
-  releaseInfo: info,
-  signature,
+  projectId,
+  categorizedStories: {
+    acceptedStories,
+    needsAttentionStories,
+    notFinishedStories,
+    chores,
+    nonStoryCommits,
+    totalCommits,
+  },
+  includeSignature,
 }: OutputGeneratorParameters): string => {
   const blocks: object[] = [
     { type: "header", text: { type: BlockType.PlainText, text: "<your-title>" } },
     {
       type: "context",
       elements: [
-        { type: BlockType.Markdown, text: `📦 *${info.totalCommits} commits* included` },
-        { type: BlockType.Markdown, text: `✅ *${info.acceptedStories.length} stories* delivered` },
-        { type: BlockType.Markdown, text: `🚨 *${info.needsAttentionStories.length} stories* needing attention` },
-        { type: BlockType.Markdown, text: `🚧 *${info.notFinishedStories.length} stories* unfinished` },
-        { type: BlockType.Markdown, text: `🛠️ *${info.chores.length} chores* included` },
+        { type: BlockType.Markdown, text: `📦 *${totalCommits} commits* included` },
+        { type: BlockType.Markdown, text: `✅ *${acceptedStories.length} stories* delivered` },
+        {
+          type: BlockType.Markdown,
+          text: `🚨 *${needsAttentionStories.length} stories* needing attention`,
+        },
+        { type: BlockType.Markdown, text: `🚧 *${notFinishedStories.length} stories* unfinished` },
+        { type: BlockType.Markdown, text: `🛠️ *${chores.length} chores* included` },
       ],
     },
     { type: "context", elements: [{ type: BlockType.Markdown, text: "View details on GitHub: <your-release-url>" }] },
     DIVIDER_BLOCK,
   ];
 
-  blocks.push(
-    ...generateStorySectionBlock({
-      projectId: tbProjectId,
-      title: `✅ *Accepted Stories*`,
-      stories: info.acceptedStories,
-    }),
-  );
+  blocks.push(...generateStorySectionBlock({ projectId, title: `✅ *Accepted Stories*`, stories: acceptedStories }));
 
   blocks.push(
     ...generateStorySectionBlock({
-      projectId: tbProjectId,
+      projectId,
       title: `🚨 *Needs Attention*`,
-      stories: info.needsAttentionStories,
+      stories: needsAttentionStories,
       warningText: "These stories show *mismatches*: finish commits and story status do not align.",
     }),
   );
 
   blocks.push(
     ...generateStorySectionBlock({
-      projectId: tbProjectId,
+      projectId,
       title: `🚧 *Not Finished Stories*`,
-      stories: info.notFinishedStories,
+      stories: notFinishedStories,
       warningText: "These stories are *not completed*: no finish commit and not accepted.",
     }),
   );
 
-  blocks.push(
-    ...generateStorySectionBlock({
-      projectId: tbProjectId,
-      title: `🛠️ *Chores*`,
-      stories: info.chores,
-      isChore: true,
-    }),
-  );
+  blocks.push(...generateStorySectionBlock({ projectId, title: `🛠️ *Chores*`, stories: chores, isChore: true }));
 
   blocks.push({
     type: "section",
-    text: { type: BlockType.Markdown, text: `🔍 *Non-story Commits* (${info.nonStoryCommits.length})` },
+    text: { type: BlockType.Markdown, text: `🔍 *Non-story Commits* (${nonStoryCommits.length})` },
   });
 
-  if (info.nonStoryCommits.length > 0) {
+  if (nonStoryCommits.length > 0) {
     blocks.push({
       type: "rich_text",
       elements: [
@@ -81,7 +74,7 @@ export const generateSlackPayload = ({
           style: "bullet",
           indent: 0,
           border: 0,
-          elements: info.nonStoryCommits.map((commit) => ({
+          elements: nonStoryCommits.map((commit) => ({
             type: "rich_text_section",
             elements: [{ type: "text", text: commit.message }],
           })),
@@ -93,7 +86,7 @@ export const generateSlackPayload = ({
   }
   blocks.push(SPACER_BLOCK, DIVIDER_BLOCK);
 
-  if (signature) {
+  if (includeSignature) {
     blocks.push({
       type: "context",
       elements: [
@@ -144,7 +137,7 @@ const generateStorySectionBlock = ({
             ? {
                 type: "rich_text_section",
                 elements: [
-                  { type: "link", url: createUrl(projectId, story.id), text: story.title },
+                  { type: "link", url: generateUrl(projectId, story.id), text: story.title },
                   ...(story.status !== "Accepted" ? [{ type: "text", text: " (Not finished)" }] : []),
                 ],
               }
@@ -152,7 +145,7 @@ const generateStorySectionBlock = ({
                 type: "rich_text_section",
                 elements: [
                   { type: "text", text: `${getStoryIcon(story.storyType)} ` },
-                  { type: "link", url: createUrl(projectId, story.id), text: story.title },
+                  { type: "link", url: generateUrl(projectId, story.id), text: story.title },
                 ],
               };
         }),
