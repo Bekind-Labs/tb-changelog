@@ -9,3 +9,4 @@ coverage/
 .idea/
 .claude/
 CLAUDE.md
+.tb-changelog-cache

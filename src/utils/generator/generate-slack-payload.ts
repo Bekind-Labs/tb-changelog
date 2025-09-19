@@ -11,17 +11,21 @@ const DIVIDER_BLOCK = { type: "divider" };
 const NO_STORY_BLOCK = (text: string) => ({ type: "section", text: { type: BlockType.PlainText, text } });
 const SPACER_BLOCK = { type: "section", text: { type: BlockType.PlainText, text: " " } };
 
-export const generateSlackPayload = ({ projectId, ...args }: OutputGeneratorParameters): string => {
+export const generateSlackPayload = ({
+  tbProjectId,
+  releaseInfo: info,
+  signature,
+}: OutputGeneratorParameters): string => {
   const blocks: object[] = [
     { type: "header", text: { type: BlockType.PlainText, text: "<your-title>" } },
     {
       type: "context",
       elements: [
-        { type: BlockType.Markdown, text: `📦 *${args.totalCommits} commits* included` },
-        { type: BlockType.Markdown, text: `✅ *${args.acceptedStories.length} stories* delivered` },
-        { type: BlockType.Markdown, text: `🚨 *${args.needsAttentionStories.length} stories* needing attention` },
-        { type: BlockType.Markdown, text: `🚧 *${args.notFinishedStories.length} stories* unfinished` },
-        { type: BlockType.Markdown, text: `🛠️ *${args.chores.length} chores* included` },
+        { type: BlockType.Markdown, text: `📦 *${info.totalCommits} commits* included` },
+        { type: BlockType.Markdown, text: `✅ *${info.acceptedStories.length} stories* delivered` },
+        { type: BlockType.Markdown, text: `🚨 *${info.needsAttentionStories.length} stories* needing attention` },
+        { type: BlockType.Markdown, text: `🚧 *${info.notFinishedStories.length} stories* unfinished` },
+        { type: BlockType.Markdown, text: `🛠️ *${info.chores.length} chores* included` },
       ],
     },
     { type: "context", elements: [{ type: BlockType.Markdown, text: "View details on GitHub: <your-release-url>" }] },
@@ -30,45 +34,45 @@ export const generateSlackPayload = ({ projectId, ...args }: OutputGeneratorPara
 
   blocks.push(
     ...generateStorySectionBlock({
-      projectId,
+      projectId: tbProjectId,
       title: `✅ *Accepted Stories*`,
-      stories: args.acceptedStories,
+      stories: info.acceptedStories,
     }),
   );
 
   blocks.push(
     ...generateStorySectionBlock({
-      projectId,
+      projectId: tbProjectId,
       title: `🚨 *Needs Attention*`,
-      stories: args.needsAttentionStories,
+      stories: info.needsAttentionStories,
       warningText: "These stories show *mismatches*: finish commits and story status do not align.",
     }),
   );
 
   blocks.push(
     ...generateStorySectionBlock({
-      projectId,
+      projectId: tbProjectId,
       title: `🚧 *Not Finished Stories*`,
-      stories: args.notFinishedStories,
+      stories: info.notFinishedStories,
       warningText: "These stories are *not completed*: no finish commit and not accepted.",
     }),
   );
 
   blocks.push(
     ...generateStorySectionBlock({
-      projectId,
+      projectId: tbProjectId,
       title: `🛠️ *Chores*`,
-      stories: args.chores,
+      stories: info.chores,
       isChore: true,
     }),
   );
 
   blocks.push({
     type: "section",
-    text: { type: BlockType.Markdown, text: `🔍 *Non-story Commits* (${args.nonStoryCommits.length})` },
+    text: { type: BlockType.Markdown, text: `🔍 *Non-story Commits* (${info.nonStoryCommits.length})` },
   });
 
-  if (args.nonStoryCommits.length > 0) {
+  if (info.nonStoryCommits.length > 0) {
     blocks.push({
       type: "rich_text",
       elements: [
@@ -77,7 +81,7 @@ export const generateSlackPayload = ({ projectId, ...args }: OutputGeneratorPara
           style: "bullet",
           indent: 0,
           border: 0,
-          elements: args.nonStoryCommits.map((commit) => ({
+          elements: info.nonStoryCommits.map((commit) => ({
             type: "rich_text_section",
             elements: [{ type: "text", text: commit.message }],
           })),
@@ -89,7 +93,7 @@ export const generateSlackPayload = ({ projectId, ...args }: OutputGeneratorPara
   }
   blocks.push(SPACER_BLOCK, DIVIDER_BLOCK);
 
-  if (args.signature) {
+  if (signature) {
     blocks.push({
       type: "context",
       elements: [

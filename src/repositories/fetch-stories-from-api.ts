@@ -1,11 +1,6 @@
-import consola from "consola";
 import type { TBStory } from "../types";
-export const fetchStoriesFromApi = async (projectId: string, apiKey: string, _ids: string[]): Promise<TBStory[]> => {
-  if (_ids.length === 0) {
-    consola.debug({ message: "No stories to fetch" });
-    return [];
-  }
 
+export const fetchStoriesFromApi = async (projectId: string, apiKey: string): Promise<TBStory[]> => {
   const res = await fetch("https://trackerboot.com/analytics/graphql", {
     method: "POST",
     headers: {

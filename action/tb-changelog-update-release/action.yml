@@ -78,6 +78,7 @@ runs:
           --to "${{ steps.detect-versions.outputs.to }}" \
           --format "${{ inputs.format }}" \
           $( [ "${{ inputs.no-signature }}" = "true" ] && echo "--no-signature" || echo "" ) \
+          --use-cache \
           --output /tmp/changelog.md
       env:
         TB_API_KEY: ${{ inputs.tb-api-key }}
@@ -104,6 +105,7 @@ runs:
           --to "${{ steps.detect-versions.outputs.to }}" \
           --format "slack-payload" \
           $( [ "${{ inputs.no-signature }}" = "true" ] && echo "--no-signature" || echo "" ) \
+          --use-cache \
           --output /tmp/slack-payload.json
       env:
         TB_API_KEY: ${{ inputs.tb-api-key }}

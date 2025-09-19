@@ -4,18 +4,20 @@ import { combineAllInformation } from "./combine-all-information";
 
 describe("combineAllInformation", () => {
   it("returns empty results when no data provided", () => {
-    const result = combineAllInformation([], [], []);
+    const result = combineAllInformation([], [], [], []);
 
     expect(result.acceptedStories).toHaveLength(0);
     expect(result.needsAttentionStories).toHaveLength(0);
     expect(result.notFinishedStories).toHaveLength(0);
     expect(result.chores).toHaveLength(0);
     expect(result.nonStoryCommits).toHaveLength(0);
+    expect(result.totalCommits).toBe(0);
   });
 
   describe("categorizes accepted stories correctly", () => {
     it("includes stories that are both accepted and finished", () => {
       const result = combineAllInformation(
+        [],
         [
           buildGitStory({
             id: "123",
@@ -52,6 +54,7 @@ describe("combineAllInformation", () => {
 
     it("excludes chore type stories from accepted stories even when conditions match", () => {
       const result = combineAllInformation(
+        [],
         [
           buildGitStory({
             id: "123",
@@ -70,6 +73,7 @@ describe("combineAllInformation", () => {
   describe("categorizes stories needing attention", () => {
     it("flags stories that are finished but not accepted", () => {
       const result = combineAllInformation(
+        [],
         [
           buildGitStory({
             id: "123",
@@ -93,6 +97,7 @@ describe("combineAllInformation", () => {
 
     it("flags stories that are accepted but not finished", () => {
       const result = combineAllInformation(
+        [],
         [
           buildGitStory({
             id: "123",
@@ -123,6 +128,7 @@ describe("combineAllInformation", () => {
 
   it("categorizes stories that are unfinished correctly", () => {
     const result = combineAllInformation(
+      [],
       [
         buildGitStory({
           id: "123",
@@ -147,6 +153,7 @@ describe("combineAllInformation", () => {
 
   it("categorizes all chores regardless of status", () => {
     const result = combineAllInformation(
+      [],
       [
         buildGitStory({ id: "111" }),
         buildGitStory({ id: "222" }),
@@ -178,6 +185,7 @@ describe("combineAllInformation", () => {
 
   it("categorizes commits without story references", () => {
     const result = combineAllInformation(
+      [],
       [buildGitStory({ id: "123", commits: [buildGitCommit({})] })],
       [
         buildGitCommit({ message: "Regular commit without story", hash: "hash2", shortHash: "hash2" }),
@@ -188,5 +196,11 @@ describe("combineAllInformation", () => {
 
     expect(result.nonStoryCommits).toHaveLength(2);
     expect(result.nonStoryCommits.map((c) => c.hash)).toEqual(["hash2", "hash3"]);
+  });
+
+  it("returns correct total commit count", () => {
+    const result = combineAllInformation(Array(10).fill(buildGitStory({})), [], [], []);
+
+    expect(result.totalCommits).toEqual(10);
   });
 });

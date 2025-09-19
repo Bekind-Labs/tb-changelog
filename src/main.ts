@@ -3,11 +3,15 @@ import consola from "consola";
 import { colorize } from "consola/utils";
 import { fetchStoriesFromApi } from "./repositories/fetch-stories-from-api";
 import { getCommits } from "./repositories/get-commits";
-import { combineAllInformation } from "./utils/combine-all-information";
+import type { TBStory } from "./types";
+import { loadCacheIfExists, saveCache } from "./utils/cache";
+import { combineAllInformation, type ReleaseInfo } from "./utils/combine-all-information";
 import { extractGitCommits } from "./utils/extract-git-commits";
 import { generateOutput } from "./utils/generate-output";
 import { parseOptions } from "./utils/parse-options";
 import { showHelp } from "./utils/show-help";
+
+const CACHE_FILE = "./.tb-changelog-cache";
 
 export async function main(args: string[]) {
   try {
@@ -21,42 +25,52 @@ export async function main(args: string[]) {
     consola.log(colorize("dim", `tb-changelog v${options.version}\n`));
 
     consola.debug({ badge: true, message: options });
-    consola.info(`Generating changelog: ${colorize("blue", options.from)} → ${colorize("green", options.to)}`);
-
-    const commits = await getCommits(options);
-    consola.success(`Found ${colorize("blue", `${commits.length} commits`)}`);
-
-    const { gitStories, nonStoryCommits } = extractGitCommits(commits);
-    consola.success(
-      `Found ${colorize("blue", `${gitStories.length} stories`)}:`,
-      colorize("dim", gitStories.map(({ id }) => id).join(",")),
+    consola.info(
+      `Generating changelog: ${colorize("blue", options.from)} → ${colorize("green", options.to)}${options.useCache ? " (using cache)" : ""}`,
     );
 
-    consola.debug({ badge: true, message: "Fetching stories from TrackerBoot API..." });
-    const tbStories = await fetchStoriesFromApi(
-      options.tbProjectId,
-      options.apiKey,
-      gitStories.map((story) => story.id),
-    );
-    consola.success({ message: `Retrieved ${tbStories.length} stories from TrackerBoot` });
+    let releaseInfo: ReleaseInfo | null = null;
 
-    const { acceptedStories, needsAttentionStories, notFinishedStories, chores } = combineAllInformation(
-      gitStories,
-      nonStoryCommits,
-      tbStories,
-    );
+    if (options.useCache) {
+      const cacheData = await loadCacheIfExists(options, CACHE_FILE);
 
-    const markdown = generateOutput({
-      projectId: options.tbProjectId,
-      acceptedStories,
-      needsAttentionStories,
-      notFinishedStories,
-      chores,
-      nonStoryCommits,
-      totalCommits: commits.length,
-      format: options.format,
-      signature: options.signature,
-    });
+      if (cacheData) {
+        consola.success(`Found and matched cache (${cacheData.key}). Using cached data.`);
+        releaseInfo = cacheData.data;
+      }
+    }
+
+    if (!releaseInfo) {
+      const commits = await getCommits(options);
+      consola.success(`Found ${colorize("blue", `${commits.length} commits`)} from git`);
+
+      const { gitStories, nonStoryCommits } = extractGitCommits(commits);
+      consola.success(
+        `Found ${colorize("blue", `${gitStories.length} stories`)} from git:`,
+        colorize("dim", gitStories.map(({ id }) => id).join(",")),
+      );
+
+      let tbStories: TBStory[] = [];
+      if (!gitStories.length) {
+        consola.success({ message: "No stories to fetch from TrackerBoot. Skipping API call." });
+      } else {
+        consola.debug(colorize("dim", "Fetching stories from TrackerBoot API..."));
+        tbStories = await fetchStoriesFromApi(options.tbProjectId, options.apiKey);
+        consola.success({ message: `Retrieved ${colorize("blue", `${tbStories.length} stories`)} from TrackerBoot` });
+      }
+
+      releaseInfo = combineAllInformation(commits, gitStories, nonStoryCommits, tbStories);
+
+      if (options.useCache) {
+        await saveCache(options, releaseInfo, CACHE_FILE);
+      }
+    }
+
+    if (!releaseInfo) {
+      throw new Error("Failed to combine all information.");
+    }
+
+    const markdown = generateOutput({ ...options, releaseInfo });
 
     if (options.output) {
       await writeFile(options.output, markdown, "utf-8");

@@ -76,6 +76,7 @@ describe("parseOptions", () => {
         { param: "format", defaultValue: "github" },
         { param: "output", defaultValue: undefined },
         { param: "signature", defaultValue: true },
+        { param: "useCache", defaultValue: false },
       ])("defaults $param to $defaultValue when not specified", ({ param, defaultValue }) => {
         const result = parseOptions(baseArgs);
         expect(result).toMatchObject({ [param]: defaultValue });
@@ -113,6 +114,11 @@ describe("parseOptions", () => {
           name: "--no-signature option",
           args: [...baseArgs, "--no-signature"],
           expected: { signature: false },
+        },
+        {
+          name: "--use-cache option",
+          args: [...baseArgs, "--use-cache"],
+          expected: { useCache: true },
         },
       ])("accepts $name", ({ args, expected }) => {
         const result = parseOptions(args);
@@ -165,6 +171,7 @@ describe("parseOptions", () => {
         help: false,
         version: "1.2.3",
         signature: true,
+        useCache: false,
       });
     });
   });

@@ -1,13 +1,15 @@
 import type { GitCommit, GitStory, Story, TBStory } from "../types";
 
-type ReleaseInfo = {
+export type ReleaseInfo = {
   acceptedStories: Story[];
   needsAttentionStories: Story[];
   notFinishedStories: Story[];
   chores: Story[];
   nonStoryCommits: GitCommit[];
+  totalCommits: number;
 };
 export function combineAllInformation(
+  allCommits: GitCommit[],
   storiesWithCommits: GitStory[],
   nonStoryCommits: GitCommit[],
   tbStories: TBStory[],
@@ -49,5 +51,6 @@ export function combineAllInformation(
     notFinishedStories,
     chores,
     nonStoryCommits,
+    totalCommits: allCommits.length,
   };
 }

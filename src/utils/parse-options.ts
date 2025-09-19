@@ -13,6 +13,7 @@ type Options =
       format: MarkdownFormat;
       version: string;
       signature: boolean;
+      useCache: boolean;
     }
   | { help: true };
 export const parseOptions = (args: string[]): Options => {
@@ -44,6 +45,10 @@ export const parseOptions = (args: string[]): Options => {
       },
       "no-signature": {
         type: "boolean",
+      },
+      "use-cache": {
+        type: "boolean",
+        default: false,
       },
     },
     allowPositionals: false,
@@ -82,5 +87,6 @@ export const parseOptions = (args: string[]): Options => {
     format,
     version: packageJson.version,
     signature: !options.values["no-signature"],
+    useCache: options.values["use-cache"],
   };
 };

@@ -93,6 +93,8 @@ Options:
   --format <type>, -f <type>       Output format (default: github)
                                    Options: github, github-light, slack-payload
   --no-signature                   Disable signature in output
+  --use-cache                      Cache processed data (CI only - no expiration)
+                                   For generating multiple formats in same run
   --help, -h                       Show this help message
 
 Environment Variables:

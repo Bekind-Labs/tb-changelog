@@ -4,23 +4,26 @@ import { createUrl, getStoryIcon } from "./utils";
 
 const SPACER = "<br />";
 
-export const generateGithubMarkdown = ({ projectId, ...args }: OutputGeneratorParameters, isLight: boolean): string => {
+export const generateGithubMarkdown = (
+  { tbProjectId, releaseInfo: info, signature }: OutputGeneratorParameters,
+  isLight: boolean,
+): string => {
   return `
 > [!NOTE]
-> 📦 ${args.totalCommits} commits included, ✅ ${args.acceptedStories.length} stories delivered,
-> 🚨 ${args.needsAttentionStories.length} stories needing attention, 🚧 ${args.notFinishedStories.length} stories unfinished, 🛠️ ${args.chores.length} chores included
+> 📦 ${info.totalCommits} commits included, ✅ ${info.acceptedStories.length} stories delivered,
+> 🚨 ${info.needsAttentionStories.length} stories needing attention, 🚧 ${info.notFinishedStories.length} stories unfinished, 🛠️ ${info.chores.length} chores included
 
 ${generateFromStories({
-  projectId,
+  projectId: tbProjectId,
   title: `✅ Accepted Stories`,
-  stories: args.acceptedStories,
+  stories: info.acceptedStories,
   isLight,
 })}
 
 ${generateFromStories({
-  projectId,
+  projectId: tbProjectId,
   title: `🚨 Needs Attention`,
-  stories: args.needsAttentionStories,
+  stories: info.needsAttentionStories,
   warningText: `
 > [!WARNING]
 > These stories show **mismatches**: finish commits and stort status do not align.  
@@ -30,9 +33,9 @@ ${generateFromStories({
 })}
 
 ${generateFromStories({
-  projectId,
+  projectId: tbProjectId,
   title: `🚧 Not Finished Stories`,
-  stories: args.notFinishedStories,
+  stories: info.notFinishedStories,
   warningText: `
 > [!CAUTION]
 > These stories are **not completed**: no finish commit and not accepted.  
@@ -42,16 +45,16 @@ ${generateFromStories({
 })}
 
 ${generateFromStories({
-  projectId,
+  projectId: tbProjectId,
   title: `🛠️ Chores`,
-  stories: args.chores,
+  stories: info.chores,
   isLight,
 })}
 
-## 🔍 Non-story Commits (${args.nonStoryCommits.length})
-${args.nonStoryCommits.length ? generateCommitList(args.nonStoryCommits) : "No commits."}
+## 🔍 Non-story Commits (${info.nonStoryCommits.length})
+${info.nonStoryCommits.length ? generateCommitList(info.nonStoryCommits) : "No commits."}
 
-${signatureIfNeeded(args.signature)}
+${signatureIfNeeded(signature)}
   `.trim();
 };
 

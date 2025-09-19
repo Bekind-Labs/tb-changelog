@@ -1,4 +1,4 @@
-import type { GitCommit, Story } from "../types";
+import type { ReleaseInfo } from "./combine-all-information";
 import { generateGithubMarkdown } from "./generator/generate-github-markdown";
 import { generateSlackPayload } from "./generator/generate-slack-payload";
 
@@ -6,13 +6,8 @@ export const MarkdownFormats = ["github", "github-light", "slack-payload"] as co
 export type MarkdownFormat = (typeof MarkdownFormats)[number];
 
 export type GenerateOutputParameters = {
-  projectId: string;
-  acceptedStories: Story[];
-  needsAttentionStories: Story[];
-  notFinishedStories: Story[];
-  chores: Story[];
-  nonStoryCommits: GitCommit[];
-  totalCommits: number;
+  tbProjectId: string;
+  releaseInfo: ReleaseInfo;
   signature: boolean;
   format: MarkdownFormat;
 };
