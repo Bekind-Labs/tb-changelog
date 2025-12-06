@@ -27,6 +27,14 @@ inputs:
     required: false
     default: '#10b981'
 
+outputs:
+  channel-id:
+    description: 'The channel ID of the posted Slack message'
+    value: ${{ steps.slack-message.outputs.channel-id }}
+  thread-ts:
+    description: 'The timestamp of the posted Slack message (thread_ts)'
+    value: ${{ steps.slack-message.outputs.thread-ts }}
+
 runs:
   using: 'composite'
   steps:
@@ -142,7 +150,13 @@ runs:
           -H "Authorization: Bearer ${{ inputs.slack-bot-token }}" \
           -H "Content-Type: application/json" \
           -d @/tmp/slack-payload.json \
+          -o response.json \
           https://slack.com/api/chat.postMessage
+        
+        CHANNEL_ID=$(jq -r '.channel' response.json)
+        THREAD_TS=$(jq -r '.ts' response.json)
+        echo "channel-id=$CHANNEL_ID" >> $GITHUB_OUTPUT
+        echo "thread-ts=$THREAD_TS" >> $GITHUB_OUTPUT
 
         echo "✅ Posted release notification to Slack with Block Kit"
       env:
