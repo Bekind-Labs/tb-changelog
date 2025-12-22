@@ -120,6 +120,7 @@ runs:
         TB_PROJECT_ID: ${{ inputs.tb-project-id }}
 
     - name: Post to Slack
+      id: slack-message
       if: github.event_name == 'release' && inputs.slack-bot-token != '' && inputs.slack-channel != ''
       shell: bash
       run: |
